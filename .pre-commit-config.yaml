@@ -1,0 +1,31 @@
+exclude: "docs|node_modules|migrations|shared|.git|.tox|.hbs"
+default_stages: [commit]
+fail_fast: true
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks # Refer to this repository for futher documentation about official pre-commit hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-added-large-files
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: double-quote-string-fixer
+      - id: mixed-line-ending
+      - id: check-toml
+      - id: check-yaml
+        args:
+          - --unsafe # Instead of loading the files, simply parse them for syntax.
+      - id: detect-private-key
+
+
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.272
+    hooks:
+      - id: ruff
+        args:
+          - --fix # Enables autofix
+
+  - repo: https://github.com/psf/black # Refer to this repository for futher documentation about black hook
+    rev: 23.3.0
+    hooks:
+      - id: black

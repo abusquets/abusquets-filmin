@@ -135,5 +135,5 @@ dmypy.json
 # Custom
 \!*
 .DS_Store
-env-webapp-dev
 src/debug_scripts/
+env-api-dev

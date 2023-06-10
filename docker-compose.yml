@@ -1,0 +1,30 @@
+version: '3.7'
+services:
+  api:
+    container_name: api
+    hostname: api.filmin
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        POETRY_DEV: ${POETRY_DEV:-true}
+        WAIT_BIN: ${WAIT_BIN:-wait}
+    env_file:
+      - env-api-dev
+    environment:
+      DEBUGPY: ${DEBUGPY:-true}
+    volumes:
+      - ./src/:/app:cached
+    ports:
+      - 8000:80
+      - 5678:5678 # debupy for webapp
+      - 5679:5679 # debupy for console
+    command:
+      - /bin/sh
+      - -c
+      - |
+        /wait && bash -c \
+        'python -m debugpy --listen 0.0.0.0:5678 \
+        -m uvicorn app.asgi:app --host 0.0.0.0 --port 80 \
+        --reload --reload-dir /app --log-config logging.dev.yaml'
+    restart: on-failure
