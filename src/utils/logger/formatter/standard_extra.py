@@ -30,7 +30,7 @@ class FormatterExtra(logging.Formatter):
         'color_message',
     ]
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         extra = record.__dict__.copy()
         for key in self.reserved:
             extra.pop(key, None)
