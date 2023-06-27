@@ -1,4 +1,6 @@
-from core.di.mixins.core import CoreContainerMixin
+from filmin.di.mixins import FilminContainerMixin
+
+from core.di.mixins import CoreContainerMixin
 from infra.database.sqlalchemy.session import AbstractDatabase
 from utils.di import DIContainer
 
@@ -12,5 +14,5 @@ class AppContainerMixin:
         return Database()
 
 
-class AppContainer(CoreContainerMixin, AppContainerMixin, DIContainer):
+class AppContainer(CoreContainerMixin, FilminContainerMixin, AppContainerMixin, DIContainer):
     pass

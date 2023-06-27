@@ -18,6 +18,7 @@ services:
       WAIT_LOGGER_LEVEL: error
       WAIT_TIMEOUT: 60
       WAIT_SLEEP_INTERVAL: 5
+      PYDEVD_DISABLE_FILE_VALIDATION: 1
     volumes:
       - ./src/:/app:cached
     ports:
@@ -29,9 +30,14 @@ services:
       - -c
       - |
         /wait && bash -c \
-        'python -m debugpy --listen 0.0.0.0:5678 \
+        'if [ "${DEBUGPY}" == "true" ]; then \
+        python -m debugpy --listen 0.0.0.0:5678 \
         -m uvicorn app.asgi:app --host 0.0.0.0 --port 80 \
-        --reload --reload-dir /app --log-config logging.dev.yaml'
+        --reload --reload-dir /app --log-config logging.dev.yaml; \
+        else \
+        python -m uvicorn app.asgi:app --host 0.0.0.0 --port 80 \
+        --reload --reload-dir /app --log-config logging.dev.yaml; \
+        fi'
     restart: on-failure
 
   postgres:

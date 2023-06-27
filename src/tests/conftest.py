@@ -34,7 +34,7 @@ def event_loop() -> Iterator[asyncio.AbstractEventLoop]:
 
 @pytest.fixture(scope='session', autouse=True)
 def engine() -> AsyncEngine:
-    yield create_async_engine(settings.DATABASE_URL, future=True, echo=True)
+    yield create_async_engine(settings.DATABASE_URL, future=True, echo=False)
 
 
 @pytest.fixture(scope='session')

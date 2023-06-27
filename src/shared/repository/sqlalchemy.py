@@ -71,16 +71,17 @@ class SqlAlchemyRepository(AbstractRepository[EntityT, CreateT, UpdateT]):
             session.add(instance)
         return instance
 
+
     async def update(self, uuid: str, data: UpdateT) -> EntityT:
+        to_update = data.dict(exclude_unset=True)
+        if not to_update:
+            raise ValueError('No data to update')
         async with self.session_factory() as session:
-            query = update(self.entity).filter_by(uuid=uuid).values(**data.dict(exclude_unset=True))
-            await session.execute(query)
-            return await self.get_by_id(uuid)
-
-
-    # async with self.session_factory():
-        # try:
-        #     return await super().create(data)
-        # except IntegrityError as e:
-        #     if 'duplicate key value violates unique constraint "uq_user_email"' in str(e):
-        #         raise AlreadyExists(User.__name__)
+            instance = await self.get_by_id(uuid)
+            
+            for key, value in to_update.items():
+                setattr(instance, key, value)
+           
+            session.add(instance)
+        return instance
+    

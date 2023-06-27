@@ -16,14 +16,24 @@ def create_country_repository() -> AbstractCountryRepository:
     return AppContainer().country_repository
 
 
-@router.get('/{code}')
+@router.get(
+    '/{code}',
+    responses={
+        200: {'description': 'Successful Response'},
+        404: {'description': 'Country not found'},
+        422: {'description': 'Unprocessable Entity'},
+    },
+)
 async def get_country(
     code: str, country_repository: AbstractCountryRepository = Depends(create_country_repository)
 ) -> Country:
     return await country_repository.get_by_id(code)
 
 
-@router.get('')
+@router.get(
+    '',
+    responses={200: {'description': 'Successful Response'}},
+)
 async def list_countries(
     country_repository: AbstractCountryRepository = Depends(create_country_repository),
 ) -> List[Country]:
