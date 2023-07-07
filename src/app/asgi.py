@@ -3,6 +3,8 @@ import logging
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
+from filmin.api.router import router as filmin_router
+
 from app.setup_logging import setup_logging
 from core.api.router import router as core_router
 from shared.exceptions import APPException
@@ -15,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 app.include_router(core_router)
+app.include_router(filmin_router)
 
 
 @app.exception_handler(APPException)

@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 
 from config import settings
 import infra.database.sqlalchemy.models.core  # noqa
+import infra.database.sqlalchemy.models.filmin  # noqa
 
 from infra.database.sqlalchemy.sqlalchemy import metadata
 
