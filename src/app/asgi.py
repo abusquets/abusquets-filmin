@@ -3,6 +3,7 @@ import logging
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
+from auth.api.router import router as auth_router
 from filmin.api.router import router as filmin_router
 
 from app.setup_logging import setup_logging
@@ -16,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 app = FastAPI()
+app.include_router(auth_router)
 app.include_router(core_router)
 app.include_router(filmin_router)
 

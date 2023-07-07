@@ -60,7 +60,7 @@ class SqlAlchemyRepository(AbstractRepository[EntityT, CreateT, UpdateT]):
         query = select(self.entity)
         return await self._paginate(query, page, size)
 
-    async def filter(self, by: FilterBy) -> List[EntityT]:
+    async def filter_by(self, by: FilterBy) -> List[EntityT]:
         query = select(self.entity).filter_by(**by)
         async with self.session_factory() as session:
             return list((await session.scalars(query)).all())

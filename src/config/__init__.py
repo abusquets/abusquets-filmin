@@ -2,9 +2,18 @@ from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
+    PROJECT_NAME: str = 'Filmin Prof of Concept'
+    APP_LOGGER_NAME: str = 'filmin_poc'
+
     APP_ENV: str = 'dev'
 
     DATABASE_URL: str = 'postgresql+asyncpg://postgres:change-me@postgres:5432/postgres'
+
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30  # 30 minutes
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
+    JWT_ALGORITHM: str = 'HS256'
+    JWT_SECRET_KEY: str = 'change-me'
+    JWT_REFRESH_SECRET_KEY: str = 'change-me'
 
 
 settings = Settings()

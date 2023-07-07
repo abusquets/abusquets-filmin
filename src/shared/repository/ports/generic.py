@@ -28,7 +28,7 @@ class AbstractRepository(Generic[EntityT, CreateT, UpdateT], abc.ABC):
         ...
 
     @abc.abstractmethod
-    async def filter(self, by: FilterBy) -> List[EntityT]:
+    async def filter_by(self, by: FilterBy) -> List[EntityT]:
         ...
 
     @abc.abstractmethod

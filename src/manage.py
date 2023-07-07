@@ -1,5 +1,7 @@
 import click
 
+import auth.cli
+
 import core.cli
 
 from utils.async_utils import async_exec
@@ -11,6 +13,9 @@ def cli_app() -> None:
 
 
 for command in core.cli.commands:
+    cli_app.command()(command)
+
+for command in auth.cli.commands:
     cli_app.command()(command)
 
 
