@@ -38,3 +38,7 @@ class AbstractRepository(Generic[EntityT, CreateT, UpdateT], abc.ABC):
     @abc.abstractmethod
     async def update(self, uuid: str, data: UpdateT) -> EntityT:
         ...
+
+    @abc.abstractmethod
+    async def delete(self, uuid: str) -> None:
+        ...

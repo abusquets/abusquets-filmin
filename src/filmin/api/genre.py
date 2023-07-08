@@ -15,6 +15,8 @@ from filmin.domain.schemas.genre import Genre
 from filmin.schemas.genre import CreateGenreInDTO, UpdatePartialGenreInDTO
 
 from app.exceptions import EmptyPayloadException
+from app.schemas import Session
+from app.session_deps import get_current_session, is_admin_session
 from shared.api.schemas.page import PagedResponseSchema, PageParams
 
 
@@ -38,6 +40,7 @@ def get_genre_repository() -> AbstractGenreRepository:
 async def get_genre(
     code: str,
     genre_repository: AbstractGenreRepository = Depends(get_genre_repository),
+    _: Session = Depends(get_current_session),
 ) -> Genre:
     return await genre_repository.get_by_id(code)
 
@@ -53,6 +56,7 @@ async def get_genre(
 async def list_genre(
     page_params: PageParams = Depends(),
     genre_repository: AbstractGenreRepository = Depends(get_genre_repository),
+    _: Session = Depends(get_current_session),
 ) -> Dict[str, Union[int, List[Genre]]]:
     count, items = await genre_repository.get_xpage(**page_params.dict())
     return {
@@ -76,6 +80,7 @@ async def list_genre(
 async def create_genre(
     request_data: CreateGenreRequestDTO,
     genre_repository: AbstractGenreRepository = Depends(get_genre_repository),
+    _: Session = Depends(is_admin_session),
 ) -> Genre:
     in_dto = CreateGenreInDTO.parse_obj(request_data.dict())
     return await genre_repository.create(in_dto)
@@ -93,6 +98,7 @@ async def update_genre(
     code: str,
     request_data: UpdateGenreRequestDTO,
     genre_repository: AbstractGenreRepository = Depends(get_genre_repository),
+    _: Session = Depends(is_admin_session),
 ) -> Genre:
     in_data = request_data.dict()
     in_dto = UpdatePartialGenreInDTO.parse_obj(in_data)
@@ -111,6 +117,7 @@ async def update_genre_partially(
     code: str,
     request_data: UpdatePartialGenreRequestDTO,
     genre_repository: AbstractGenreRepository = Depends(get_genre_repository),
+    _: Session = Depends(is_admin_session),
 ) -> Genre:
     in_data = request_data.dict(exclude_unset=True)
     if not in_data.keys():

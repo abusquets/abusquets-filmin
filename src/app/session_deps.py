@@ -15,7 +15,7 @@ async def get_current_session(
     if not token:
         raise HTTPException(
             status_code=HTTP_403_FORBIDDEN,
-            detail='Invalid authentication credentials',
+            detail='Invalid authentication credentials.',
         )
 
     claims = decode_token(token)
@@ -24,3 +24,14 @@ async def get_current_session(
         raise HTTPException(status_code=403, detail='Invalid token or expired token.')
 
     return Session(username=claims.get('sub'), profile=claims.get('profile'))
+
+
+async def is_admin_session(
+    credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
+) -> Session:
+    session = await get_current_session(credentials)
+
+    if not session.profile.is_admin:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail='Not authorized.')
+
+    return session
