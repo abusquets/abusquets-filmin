@@ -1,7 +1,7 @@
 import asyncio
 
 from asyncio import current_task
-from typing import Iterator
+from typing import Any, AsyncGenerator, Iterator
 
 from httpx import AsyncClient
 import pytest
@@ -12,8 +12,10 @@ from sqlalchemy.orm import sessionmaker
 
 from app.asgi import app
 from config import settings
+from core.cli.user import _create_admin
 import infra.database.sqlalchemy.models  # noqa
 
+from infra.database.sqlalchemy.models.core.user import users
 from infra.database.sqlalchemy.sqlalchemy import metadata
 
 
@@ -66,3 +68,13 @@ def migrate_db(event_loop: asyncio.AbstractEventLoop, engine: AsyncEngine) -> It
 async def async_client() -> AsyncClient:
     async with AsyncClient(app=app, base_url='http://test') as ac:
         yield ac
+
+
+@pytest_asyncio.fixture(scope='session')
+async def admin_user(migrate_db: Any, async_session_maker: AsyncSession) -> AsyncGenerator:
+    await _create_admin('admin@admin.net', 'Admin', '123456')
+    yield
+    async with async_session_maker() as session:
+        statement = users.delete().where(users.c.email == 'admin@admin.net')
+        await session.execute(statement)
+        await session.commit()
