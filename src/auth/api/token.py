@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Dict
+from typing import Any, Dict
 
 from fastapi import Depends, HTTPException, status
 from fastapi.routing import APIRouter
@@ -65,5 +65,5 @@ async def login(
         422: {'description': 'Unprocessable Entity'},
     },
 )
-def protected(current_session: Annotated[Session, Depends(get_current_session)]) -> ProtectedResponse:
+def protected(current_session: Session = Depends(get_current_session)) -> ProtectedResponse:
     return ProtectedResponse(username=current_session.username)

@@ -23,6 +23,8 @@ class UserRepository(
     SqlAlchemyRepository[User, CreateUserInDTO, UpdatePartialUserInDTO],
     AbstractUserRepository,
 ):
+    key = 'email'
+
     async def create(self, data: CreateUserInDTO) -> User:
         try:
             ret = await super().create(data)

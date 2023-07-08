@@ -1,15 +1,15 @@
-from typing import Any
-
 from httpx import AsyncClient
 from jose import jwt
 import pytest
 
 from auth.utils import decode_token
 
+from core.domain.schemas.user import User
+
 
 @pytest.mark.asyncio
-async def test_login(migrate_db: Any, async_client: AsyncClient, admin_user: Any) -> None:
-    data = {'email': 'admin@admin.net', 'password': '123456'}
+async def test_login(async_client: AsyncClient, admin_user: User) -> None:
+    data = {'email': admin_user.email, 'password': '123456'}
     response = await async_client.post('/auth/login', json=data)
     assert response.status_code == 200
     result = response.json()
@@ -18,11 +18,11 @@ async def test_login(migrate_db: Any, async_client: AsyncClient, admin_user: Any
     access_token = result['access_token']
 
     claims = jwt.get_unverified_claims(access_token)
-    assert claims['sub'] == 'admin@admin.net'
-    assert claims['profile']['first_name'] == 'Admin'
-    assert claims['profile']['is_admin'] is True
+    assert claims['sub'] == admin_user.email
+    assert claims['profile']['first_name'] == admin_user.first_name
+    assert claims['profile']['is_admin'] == admin_user.is_admin
 
     claims = decode_token(access_token)
-    assert claims['sub'] == 'admin@admin.net'
-    assert claims['profile']['first_name'] == 'Admin'
-    assert claims['profile']['is_admin'] is True
+    assert claims['sub'] == admin_user.email
+    assert claims['profile']['first_name'] == admin_user.first_name
+    assert claims['profile']['is_admin'] == admin_user.is_admin

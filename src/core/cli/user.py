@@ -2,16 +2,16 @@ import click
 
 from pydantic import ValidationError
 
-from core.data.repositories.ports.user import AbstractUserRepository
+from core.domain.services.user import UserService
 from core.schemas.user.create_user import CreateUserInDTO, CreateUserStdinDTO
 from shared.exceptions import AlreadyExists
 from utils.async_utils import async_exec
 
 
-def get_user_repository() -> AbstractUserRepository:
+def get_user_service() -> UserService:
     import app.app_container as container
 
-    return container.AppContainer().user_repository
+    return container.AppContainer().user_service
 
 
 async def _create_admin(email: str, first_name: str, password: str) -> None:
@@ -22,10 +22,10 @@ async def _create_admin(email: str, first_name: str, password: str) -> None:
             message = f'Error: {error}'
             raise click.BadParameter(message)
 
-    user_repository = get_user_repository()
+    user_service = get_user_service()
     in_dto = CreateUserInDTO(**in_data.dict(), is_admin=True)
     try:
-        await user_repository.create(in_dto)
+        await user_service.create_user(in_dto)
         print(f'The User {first_name}, {email} has been created')
     except AlreadyExists as e:
         print(f'Error: {e.message}')

@@ -85,3 +85,7 @@ class SqlAlchemyRepository(AbstractRepository[EntityT, CreateT, UpdateT]):
             session.add(instance)
         return instance
     
+    async def delete(self, uuid: str) -> None:
+        async with self.session_factory() as session:
+            instance = await self.get_by_id(uuid)
+            session.delete(instance)
