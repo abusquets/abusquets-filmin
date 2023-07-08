@@ -16,7 +16,7 @@ from filmin.schemas.genre import CreateGenreInDTO, UpdatePartialGenreInDTO
 
 from app.exceptions import EmptyPayloadException
 from app.schemas import Session
-from app.session_deps import get_current_session, is_admin_session
+from app.session_deps import check_access_token, is_admin_session
 from shared.api.schemas.page import PagedResponseSchema, PageParams
 
 
@@ -40,7 +40,7 @@ def get_genre_repository() -> AbstractGenreRepository:
 async def get_genre(
     code: str,
     genre_repository: AbstractGenreRepository = Depends(get_genre_repository),
-    _: Session = Depends(get_current_session),
+    _: Session = Depends(check_access_token),
 ) -> Genre:
     return await genre_repository.get_by_id(code)
 
@@ -56,7 +56,7 @@ async def get_genre(
 async def list_genre(
     page_params: PageParams = Depends(),
     genre_repository: AbstractGenreRepository = Depends(get_genre_repository),
-    _: Session = Depends(get_current_session),
+    _: Session = Depends(check_access_token),
 ) -> Dict[str, Union[int, List[Genre]]]:
     count, items = await genre_repository.get_xpage(**page_params.dict())
     return {

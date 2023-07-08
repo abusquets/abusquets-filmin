@@ -6,6 +6,10 @@ class LoginResponse(BaseModel):
     refresh_token: str
 
 
+class RefreshTokenResponse(BaseModel):
+    access_token: str
+
+
 class ProtectedResponse(BaseModel):
     username: str
 

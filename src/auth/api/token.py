@@ -3,11 +3,11 @@ from typing import Any, Dict
 from fastapi import Depends, HTTPException, status
 from fastapi.routing import APIRouter
 
-from auth.api.schemas import LoginResponse, ProtectedResponse, UserAuthRequest
+from auth.api.schemas import LoginResponse, ProtectedResponse, RefreshTokenResponse, UserAuthRequest
 from auth.utils import create_access_token, create_refresh_token
 
 from app.schemas import Session
-from app.session_deps import get_current_session
+from app.session_deps import check_access_token, check_refresh_token
 from core.data.repositories.ports.user import AbstractUserRepository
 from core.domain.schemas.user import User
 from shared.repository.ports.generic import FilterBy
@@ -65,5 +65,15 @@ async def login(
         422: {'description': 'Unprocessable Entity'},
     },
 )
-def protected(current_session: Session = Depends(get_current_session)) -> ProtectedResponse:
+async def protected(current_session: Session = Depends(check_access_token)) -> ProtectedResponse:
     return ProtectedResponse(username=current_session.username)
+
+
+@router.post('/refresh-token', summary='Refresh access token')
+async def refresh(session: Session = Depends(check_refresh_token)) -> RefreshTokenResponse:
+    profile = session.profile
+    claims: Dict[str, Any] = {
+        'profile': {'first_name': profile.first_name, 'last_name': profile.last_name, 'is_admin': profile.is_admin}
+    }
+    access_token: str = create_access_token(session.username, claims)
+    return RefreshTokenResponse(access_token=access_token)

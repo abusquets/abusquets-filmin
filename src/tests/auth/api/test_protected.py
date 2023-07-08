@@ -13,4 +13,4 @@ async def test_protected(async_client: AsyncClient) -> None:
     result = response.json()
     assert 'username' in result
 
-    assert result['username'] == 'admin@admin.net'
+    assert result['username'] == 'admin@admin.poc'
