@@ -65,8 +65,14 @@ def migrate_db(event_loop: asyncio.AbstractEventLoop, engine: AsyncEngine) -> It
 
 
 @pytest_asyncio.fixture(scope='session')
-async def async_client() -> AsyncClient:
+async def async_root_client() -> AsyncClient:
     async with AsyncClient(app=app, base_url='http://test') as ac:
+        yield ac
+
+
+@pytest_asyncio.fixture(scope='session')
+async def async_client() -> AsyncClient:
+    async with AsyncClient(app=app, base_url='http://test/api/v1') as ac:
         yield ac
 
 

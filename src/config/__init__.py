@@ -2,10 +2,13 @@ from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = 'Filmin Prof of Concept'
+    PROJECT_NAME: str = 'Filmin API'
+    PROJECT_DESCRIPTION: str = 'Filmin API - PROOF OF CONCEPT'
+    VERSION: str = '0.1.0'
     APP_LOGGER_NAME: str = 'filmin_poc'
 
     APP_ENV: str = 'dev'
+    DEBUG: bool = False
 
     DATABASE_URL: str = 'postgresql+asyncpg://postgres:change-me@postgres:5432/postgres'
 
