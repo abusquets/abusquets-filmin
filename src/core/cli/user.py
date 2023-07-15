@@ -23,7 +23,7 @@ async def _create_admin(email: str, first_name: str, password: str) -> None:
             raise click.BadParameter(message)
 
     user_service = get_user_service()
-    in_dto = CreateUserInDTO(**in_data.dict(), is_admin=True)
+    in_dto = CreateUserInDTO(**in_data.model_dump(), is_admin=True)
     try:
         await user_service.create_user(in_dto)
         print(f'The User {first_name}, {email} has been created')

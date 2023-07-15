@@ -3,10 +3,10 @@ import abc
 from contextlib import asynccontextmanager
 import contextvars
 import logging
-from typing import Any, AsyncContextManager, Dict, Optional
+from typing import Any, AsyncContextManager, AsyncIterator, Dict, Optional, cast
 
-from sqlalchemy import Engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio.engine import AsyncEngine
 from sqlalchemy.orm import sessionmaker
 
 from config import settings
@@ -28,17 +28,17 @@ class AbstractDatabase(abc.ABC):
 @singleton
 class Database(AbstractDatabase):
     def __init__(self) -> None:
-        self.engine: Engine = create_async_engine(settings.DATABASE_URL, echo=True, future=True)
-        self._session_factory: AsyncSession = sessionmaker[AsyncSession](
+        self.engine: AsyncEngine = create_async_engine(settings.DATABASE_URL, echo=True, future=True)
+        self._session_factory: sessionmaker = sessionmaker(
             self.engine, class_=AsyncSession, autocommit=False, autoflush=False, expire_on_commit=False
         )
 
     @asynccontextmanager
-    async def session(self) -> AsyncSession:
+    async def session(self) -> AsyncIterator[AsyncSession]:
         db_session: Optional[Dict[str, Any]] = None
         db_session = db_session_context.get() or {'session': None, 'level': 0}
         if db_session['level'] == 0:
-            session: AsyncSession = self._session_factory()
+            session: AsyncSession = cast(AsyncSession, self._session_factory())
             db_session['session'] = session
             await session.begin()
             logger.debug('session begin', extra={'level': db_session['level']})

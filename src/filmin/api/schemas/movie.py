@@ -6,7 +6,7 @@ from filmin.schemas.movie import CreateMovieInDTO, UpdateMovieInDTO, UpdateParti
 class CreateMovieRequestDTO(CreateMovieInDTO):
     class Config:
         extra = Extra.forbid
-        allow_population_by_field_name = False
+        populate_by_name = False
 
 
 class CreateMovieResponseDTO(BaseModel):
@@ -16,10 +16,10 @@ class CreateMovieResponseDTO(BaseModel):
 class UpdateMovieRequestDTO(UpdateMovieInDTO):
     class Config:
         extra = Extra.forbid
-        allow_population_by_field_name = False
+        populate_by_name = False
 
 
 class UpdatePartialMovieRequestDTO(UpdatePartialMovieInDTO):
     class Config:
         extra = Extra.forbid
-        allow_population_by_field_name = False
+        populate_by_name = False

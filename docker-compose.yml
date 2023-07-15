@@ -19,6 +19,10 @@ services:
       WAIT_TIMEOUT: 60
       WAIT_SLEEP_INTERVAL: 5
       PYDEVD_DISABLE_FILE_VALIDATION: 1
+      REDIS_URL: ${REDIS_URL-redis://redis:6379/0}
+      REDIS_USER: ${REDIS_USER-default}
+      REDIS_PASSWORD: ${REDIS_PASSWORD-redis}
+
     volumes:
       - ./src/:/app:cached
     ports:
@@ -71,6 +75,20 @@ services:
     volumes:
       - postgres_test_data:/var/lib/postgresql/data:delegated
 
+  redis:
+    container_name: redis.filmin
+    image: redis:latest
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD-redis}
+    command:
+    - /bin/sh
+    - -c
+    - redis-server --appendonly yes --requirepass $$REDIS_PASSWORD
+    volumes:
+      - redis_data:/data:delegated
+
+
 volumes:
   postgres_data:
   postgres_test_data:
+  redis_data:

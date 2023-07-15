@@ -16,4 +16,4 @@ class ProtectedResponse(BaseModel):
 
 class UserAuthRequest(BaseModel):
     email: str = Field(..., description='User email')
-    password: str = Field(..., min_length=6, max_length=255, description='User password')
+    password: str = Field(..., max_length=255, description='User password')

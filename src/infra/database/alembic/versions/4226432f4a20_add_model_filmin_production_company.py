@@ -21,7 +21,7 @@ def upgrade() -> None:
     op.create_table(
         'filmin_production_company',
         sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('uuid', sa.UUID(), nullable=False),
+        sa.Column('uuid', sa.UUID(), nullable=False),  # type: ignore
         sa.Column('name', sa.String(length=255), nullable=False),
         sa.PrimaryKeyConstraint('id', name=op.f('pk_filmin_production_company')),
         sa.UniqueConstraint('uuid', name=op.f('uq_filmin_production_company_uuid')),

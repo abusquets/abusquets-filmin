@@ -53,7 +53,7 @@ async def list_movie(
     page_params: PageParams = Depends(),
     movie_repository: AbstractMovieRepository = Depends(get_movie_repository),
 ) -> Dict[str, Union[int, List[Movie]]]:
-    count, items = await movie_repository.get_xpage(**page_params.dict())
+    count, items = await movie_repository.get_xpage(**page_params.model_dump())
     return {
         'total': count,
         'results': items,
@@ -76,7 +76,7 @@ async def create_movie(
     request_data: CreateMovieRequestDTO,
     movie_repository: AbstractMovieRepository = Depends(get_movie_repository),
 ) -> Movie:
-    in_dto = CreateMovieInDTO.parse_obj(request_data.dict())
+    in_dto = CreateMovieInDTO.model_validate(request_data.model_dump())
     return await movie_repository.create(in_dto)
 
 
@@ -94,8 +94,8 @@ async def create_movie(
 #     request_data: UpdateMovieRequestDTO,
 #     movie_repository: AbstractMovieRepository = Depends(get_movie_repository),
 # ) -> None:
-#     in_data = request_data.dict()
-#     in_dto = UpdatePartialMovieInDTO.parse_obj(in_data)
+#     in_data = request_data.model_dump()
+#     in_dto = UpdatePartialMovieInDTO.model_validate(in_data)
 #     await movie_repository.update(uuid, in_dto)
 
 
@@ -113,8 +113,8 @@ async def update_movie_partially(
     request_data: UpdatePartialMovieRequestDTO,
     movie_repository: AbstractMovieRepository = Depends(get_movie_repository),
 ) -> Movie:
-    in_data = request_data.dict(exclude_unset=True)
+    in_data = request_data.model_dump(exclude_unset=True)
     if not in_data.keys():
         raise EmptyPayloadException()
-    in_dto = UpdatePartialMovieInDTO.parse_obj(in_data)
+    in_dto = UpdatePartialMovieInDTO.model_validate(in_data)
     return await movie_repository.update(uuid, in_dto)

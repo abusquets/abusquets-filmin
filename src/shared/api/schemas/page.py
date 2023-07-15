@@ -1,8 +1,7 @@
 from enum import IntEnum
 from typing import Generic, List, Type, TypeVar
 
-from pydantic import BaseModel, ConstrainedInt, conint
-from pydantic.generics import GenericModel
+from pydantic import BaseModel, Field
 
 
 class PageSize(IntEnum):
@@ -12,10 +11,8 @@ class PageSize(IntEnum):
     x1000 = 1000
 
 
-PageType: ConstrainedInt = conint(ge=1)
-
 class PageParams(BaseModel):
-    page: PageType = 1
+    page: int = Field(1, ge=1, description='Page number')
     size: PageSize = PageSize.x500
 
     class Config:
@@ -25,7 +22,7 @@ class PageParams(BaseModel):
 T = TypeVar('T')
 
 
-class PagedResponseSchema(GenericModel, Generic[T]):
+class PagedResponseSchema(BaseModel, Generic[T]):
     total: int
     page: int
     size: int
