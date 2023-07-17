@@ -1,6 +1,6 @@
 import datetime
 
-from typing import Any, AsyncGenerator
+from typing import Any, AsyncContextManager, AsyncGenerator, Callable
 
 import pytest_asyncio
 
@@ -11,8 +11,11 @@ from infra.database.sqlalchemy.models.filmin.genre import genres
 from infra.database.sqlalchemy.models.filmin.movie import movie, movie_genre
 
 
+AsyncSessionCtxT = Callable[[], AsyncContextManager[AsyncSession]]
+
+
 @pytest_asyncio.fixture(scope='session')
-async def genre_western(migrate_db: Any, async_session_maker: AsyncSession) -> str:
+async def genre_western(migrate_db: Any, async_session_maker: AsyncSessionCtxT) -> str:
     async with async_session_maker() as session:
         statement = genres.insert().values(code='western', name='Western')
         await session.execute(statement)
@@ -21,7 +24,7 @@ async def genre_western(migrate_db: Any, async_session_maker: AsyncSession) -> s
 
 
 @pytest_asyncio.fixture(scope='session')
-async def genre_comedy(migrate_db: Any, async_session_maker: AsyncSession) -> str:
+async def genre_comedy(migrate_db: Any, async_session_maker: AsyncSessionCtxT) -> str:
     async with async_session_maker() as session:
         statement = genres.insert().values(code='comedy', name='Comedy')
         await session.execute(statement)
@@ -30,7 +33,7 @@ async def genre_comedy(migrate_db: Any, async_session_maker: AsyncSession) -> st
 
 
 @pytest_asyncio.fixture(scope='session')
-async def genre_animation(migrate_db: Any, async_session_maker: AsyncSession) -> str:
+async def genre_animation(migrate_db: Any, async_session_maker: AsyncSessionCtxT) -> str:
     async with async_session_maker() as session:
         statement = genres.insert().values(code='animation', name='Animation')
         await session.execute(statement)
@@ -39,7 +42,7 @@ async def genre_animation(migrate_db: Any, async_session_maker: AsyncSession) ->
 
 
 @pytest_asyncio.fixture(scope='session')
-async def genre_fake(migrate_db: Any, async_session_maker: AsyncSession) -> str:
+async def genre_fake(migrate_db: Any, async_session_maker: AsyncSessionCtxT) -> str:
     async with async_session_maker() as session:
         statement = genres.insert().values(code='fake-genre', name='Fake Genre')
         await session.execute(statement)
@@ -48,7 +51,7 @@ async def genre_fake(migrate_db: Any, async_session_maker: AsyncSession) -> str:
 
 
 @pytest_asyncio.fixture(scope='session')
-async def collection_toy_story(migrate_db: Any, async_session_maker: AsyncSession) -> str:
+async def collection_toy_story(migrate_db: Any, async_session_maker: AsyncSessionCtxT) -> str:
     async with async_session_maker() as session:
         stmt = movie_collection.insert().values(name='Toy Story Collection').returning(movie_collection.c.uuid)
         result = await session.execute(stmt)
@@ -57,7 +60,7 @@ async def collection_toy_story(migrate_db: Any, async_session_maker: AsyncSessio
 
 
 @pytest_asyncio.fixture(scope='session')
-async def collection_fake(migrate_db: Any, async_session_maker: AsyncSession) -> str:
+async def collection_fake(migrate_db: Any, async_session_maker: AsyncSessionCtxT) -> str:
     async with async_session_maker() as session:
         stmt = movie_collection.insert().values(name='Fake Collection').returning(movie_collection.c.uuid)
         result = await session.execute(stmt)
@@ -68,7 +71,7 @@ async def collection_fake(migrate_db: Any, async_session_maker: AsyncSession) ->
 @pytest_asyncio.fixture(scope='function')
 async def movie_toy_story2(
     migrate_db: Any,
-    async_session_maker: AsyncSession,
+    async_session_maker: AsyncSessionCtxT,
     collection_toy_story: str,
     genre_comedy: str,
     genre_animation: str,
@@ -116,7 +119,7 @@ async def movie_toy_story2(
 
 
 @pytest_asyncio.fixture(scope='function')
-async def clean_movie(async_session_maker: AsyncSession) -> AsyncGenerator:
+async def clean_movie(async_session_maker: AsyncSessionCtxT) -> AsyncGenerator:
     yield
     async with async_session_maker() as session:
         stmt = movie_genre.delete()

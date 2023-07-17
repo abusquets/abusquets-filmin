@@ -1,4 +1,4 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = 'HS256'
     JWT_SECRET_KEY: str = 'change-me'
     JWT_REFRESH_SECRET_KEY: str = 'change-me'
+
+    REDIS_URL: str = 'redis://redis:6379/0'
+    REDIS_USER: str = 'default'
+    REDIS_PASSWORD: str = 'change-me'
 
 
 settings = Settings()

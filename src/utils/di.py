@@ -1,4 +1,19 @@
-from typing import Any, Callable, Dict
+from functools import wraps
+from typing import Any, Callable, Dict, TypeVar
+
+
+P = TypeVar('P')
+R = TypeVar('R')
+
+
+def di_singleton(fnc: Callable[..., R]) -> Callable[..., R]:
+    setattr(fnc, 'singleton', True)  # noqa
+
+    @wraps(fnc)
+    def wrapper(*args: P, **kwargs: Any) -> R:
+        return fnc(*args, **kwargs)
+
+    return wrapper
 
 
 class DIContainer:

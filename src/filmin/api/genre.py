@@ -58,7 +58,7 @@ async def list_genre(
     genre_repository: AbstractGenreRepository = Depends(get_genre_repository),
     _: Session = Depends(check_access_token),
 ) -> Dict[str, Union[int, List[Genre]]]:
-    count, items = await genre_repository.get_xpage(**page_params.dict())
+    count, items = await genre_repository.get_xpage(**page_params.model_dump())
     return {
         'total': count,
         'results': items,
@@ -82,7 +82,7 @@ async def create_genre(
     genre_repository: AbstractGenreRepository = Depends(get_genre_repository),
     _: Session = Depends(is_admin_session),
 ) -> Genre:
-    in_dto = CreateGenreInDTO.parse_obj(request_data.dict())
+    in_dto = CreateGenreInDTO.model_validate(request_data.model_dump())
     return await genre_repository.create(in_dto)
 
 
@@ -100,8 +100,8 @@ async def update_genre(
     genre_repository: AbstractGenreRepository = Depends(get_genre_repository),
     _: Session = Depends(is_admin_session),
 ) -> Genre:
-    in_data = request_data.dict()
-    in_dto = UpdatePartialGenreInDTO.parse_obj(in_data)
+    in_data = request_data.model_dump()
+    in_dto = UpdatePartialGenreInDTO.model_validate(in_data)
     return await genre_repository.update(code, in_dto)
 
 
@@ -119,8 +119,8 @@ async def update_genre_partially(
     genre_repository: AbstractGenreRepository = Depends(get_genre_repository),
     _: Session = Depends(is_admin_session),
 ) -> Genre:
-    in_data = request_data.dict(exclude_unset=True)
+    in_data = request_data.model_dump(exclude_unset=True)
     if not in_data.keys():
         raise EmptyPayloadException()
-    in_dto = UpdatePartialGenreInDTO.parse_obj(in_data)
+    in_dto = UpdatePartialGenreInDTO.model_validate(in_data)
     return await genre_repository.update(code, in_dto)

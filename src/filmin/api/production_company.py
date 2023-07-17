@@ -54,7 +54,7 @@ async def list_production_company(
     page_params: PageParams = Depends(),
     production_company_repository: AbstractProductionCompanyRepository = Depends(get_production_company_repository),
 ) -> Dict[str, Union[int, List[ProductionCompany]]]:
-    count, items = await production_company_repository.get_xpage(**page_params.dict())
+    count, items = await production_company_repository.get_xpage(**page_params.model_dump())
     return {
         'total': count,
         'results': items,
@@ -77,7 +77,7 @@ async def create_production_company(
     request_data: CreateProductionCompanyRequestDTO,
     production_company_repository: AbstractProductionCompanyRepository = Depends(get_production_company_repository),
 ) -> ProductionCompany:
-    in_dto = CreateProductionCompanyInDTO.parse_obj(request_data.dict())
+    in_dto = CreateProductionCompanyInDTO.model_validate(request_data.model_dump())
     return await production_company_repository.create(in_dto)
 
 
@@ -94,8 +94,8 @@ async def update_production_company(
     request_data: UpdateProductionCompanyRequestDTO,
     production_company_repository: AbstractProductionCompanyRepository = Depends(get_production_company_repository),
 ) -> ProductionCompany:
-    in_data = request_data.dict()
-    in_dto = UpdatePartialProductionCompanyInDTO.parse_obj(in_data)
+    in_data = request_data.model_dump()
+    in_dto = UpdatePartialProductionCompanyInDTO.model_validate(in_data)
     return await production_company_repository.update(uuid, in_dto)
 
 
@@ -112,8 +112,8 @@ async def update_production_company_partially(
     request_data: UpdatePartialProductionCompanyRequestDTO,
     production_company_repository: AbstractProductionCompanyRepository = Depends(get_production_company_repository),
 ) -> ProductionCompany:
-    in_data = request_data.dict(exclude_unset=True)
+    in_data = request_data.model_dump(exclude_unset=True)
     if not in_data.keys():
         raise EmptyPayloadException()
-    in_dto = UpdatePartialProductionCompanyInDTO.parse_obj(in_data)
+    in_dto = UpdatePartialProductionCompanyInDTO.model_validate(in_data)
     return await production_company_repository.update(uuid, in_dto)

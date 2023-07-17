@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import AsyncContextManager, Callable, Dict, List, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import registry, relationship
@@ -26,18 +26,21 @@ mapper_registry.map_imperatively(
     },
 )
 
+AsyncSessionCtxT = Callable[[], AsyncContextManager[AsyncSession]]
+
 
 class MovieRepository(
     SqlAlchemyRepository[Movie, CreateMovieInDTO, UpdatePartialMovieInDTO],
     AbstractMovieRepository,
 ):
-    def __init__(self, session: AsyncSession, genre_repository: AbstractGenreRepository) -> None:
+    def __init__(self, session: AsyncSessionCtxT, genre_repository: AbstractGenreRepository) -> None:
         super().__init__(session)
         self.genre_repository = genre_repository
 
     async def create(self, data: CreateMovieInDTO) -> Movie:
         async with self.session_factory() as session:
-            instance = self.entity(**data.dict(exclude={'genres'}))
+            in_data = data.model_dump(exclude={'genres', 'collection_id'})
+            instance = self.entity(**in_data)
             if data.genres:
                 for g in data.genres:
                     instance.genres.append(await self.genre_repository.get_by_id(g))
@@ -45,7 +48,7 @@ class MovieRepository(
         return await self.get_by_id(str(instance.uuid))
 
     async def update(self, uuid: str, data: UpdatePartialMovieInDTO) -> Movie:
-        to_update = data.dict(exclude_unset=True)
+        to_update = data.model_dump(exclude_unset=True)
         if not to_update:
             raise ValueError('No data to update')
 

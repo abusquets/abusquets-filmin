@@ -1,4 +1,4 @@
-from typing import Any, AsyncContextManager, Callable, List, Optional, Self, Tuple, Type, TypeVar, cast
+from typing import Any, AsyncContextManager, AsyncIterator, Callable, List, Optional, Self, Tuple, Type, TypeVar, cast
 
 from pydantic import BaseModel
 from sqlalchemy.exc import NoResultFound
@@ -26,7 +26,10 @@ class SqlAlchemyRepository(AbstractRepository[EntityT, CreateT, UpdateT]):
             cls.entity = generics[0]
         return super().__new__(cls)
 
-    def __init__(self, session: AsyncSession) -> None:
+    def __init__(
+        self,
+        session: Callable[[], AsyncContextManager[AsyncSession]],
+    ) -> None:
         self.session_factory = session
 
     async def get_by_id(self, uuid: str) -> EntityT:
@@ -67,24 +70,23 @@ class SqlAlchemyRepository(AbstractRepository[EntityT, CreateT, UpdateT]):
 
     async def create(self, data: CreateT) -> EntityT:
         async with self.session_factory() as session:
-            instance = self.entity(**data.dict())
+            instance = self.entity(**data.model_dump())
             session.add(instance)
         return instance
 
-
     async def update(self, uuid: str, data: UpdateT) -> EntityT:
-        to_update = data.dict(exclude_unset=True)
+        to_update = data.model_dump(exclude_unset=True)
         if not to_update:
             raise ValueError('No data to update')
         async with self.session_factory() as session:
             instance = await self.get_by_id(uuid)
-            
+
             for key, value in to_update.items():
                 setattr(instance, key, value)
-           
+
             session.add(instance)
         return instance
-    
+
     async def delete(self, uuid: str) -> None:
         async with self.session_factory() as session:
             instance = await self.get_by_id(uuid)

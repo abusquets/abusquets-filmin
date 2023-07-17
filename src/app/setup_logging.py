@@ -1,7 +1,7 @@
 import logging.config
 import os
 
-import yaml  # type: ignore
+import yaml
 
 from config import settings
 

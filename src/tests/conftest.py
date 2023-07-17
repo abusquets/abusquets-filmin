@@ -1,7 +1,7 @@
 import asyncio
 
 from asyncio import current_task
-from typing import Any, AsyncGenerator, Iterator
+from typing import Any, AsyncGenerator, Generator, Iterator
 
 from httpx import AsyncClient
 import pytest
@@ -10,10 +10,9 @@ import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_scoped_session, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from auth.utils import create_access_token
-
 from app.app_container import AppContainer
 from app.asgi import app
+from auth.utils import create_access_token
 from config import settings
 from core.data.repositories.ports.user import AbstractUserRepository
 from core.domain.schemas.user import User
@@ -39,12 +38,12 @@ def event_loop() -> Iterator[asyncio.AbstractEventLoop]:
 
 
 @pytest.fixture(scope='session', autouse=True)
-def engine() -> AsyncEngine:
+def engine() -> Generator:
     yield create_async_engine(settings.DATABASE_URL, future=True, echo=False)
 
 
 @pytest.fixture(scope='session')
-def async_session_maker(engine: AsyncEngine) -> AsyncSession:
+def async_session_maker(engine: AsyncEngine) -> Generator:
     yield async_scoped_session(
         sessionmaker(engine, expire_on_commit=False, class_=AsyncSession), scopefunc=current_task
     )

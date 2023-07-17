@@ -1,7 +1,6 @@
 import click
 
 import auth.cli
-
 import core.cli
 
 from utils.async_utils import async_exec

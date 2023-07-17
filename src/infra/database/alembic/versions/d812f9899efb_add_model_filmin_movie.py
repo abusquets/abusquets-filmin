@@ -21,7 +21,7 @@ def upgrade() -> None:
     op.create_table(
         'filmin_movie',
         sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('uuid', sa.UUID(), nullable=False),
+        sa.Column('uuid', sa.UUID(), nullable=False),  # type: ignore
         sa.Column('title', sa.String(length=255), nullable=False),
         sa.Column('release_date', sa.Date(), nullable=True),
         sa.Column('budget', sa.BigInteger(), nullable=True),
@@ -30,7 +30,7 @@ def upgrade() -> None:
         sa.Column('runtime', sa.BigInteger(), nullable=True),
         sa.Column('rating', sa.Float(), nullable=True),
         sa.Column('original_language', sa.String(length=2), nullable=True),
-        sa.Column('collection_id', sa.UUID(), nullable=True),
+        sa.Column('collection_id', sa.UUID(), nullable=True),  # type: ignore
         sa.Column('overview', sa.Text(), nullable=True),
         sa.ForeignKeyConstraint(
             ['collection_id'], ['filmin_collection.uuid'], name=op.f('fk_filmin_movie_collection_id_filmin_collection')

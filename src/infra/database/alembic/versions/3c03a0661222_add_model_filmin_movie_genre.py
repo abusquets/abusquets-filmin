@@ -21,7 +21,7 @@ def upgrade() -> None:
     op.create_table(
         'filmin_movie_genre',
         sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('movie_id', sa.UUID(), nullable=True),
+        sa.Column('movie_id', sa.UUID(), nullable=True),  # type: ignore
         sa.Column('genre_id', sa.String(length=255), nullable=True),
         sa.ForeignKeyConstraint(
             ['genre_id'], ['filmin_genre.code'], name=op.f('fk_filmin_movie_genre_genre_id_filmin_genre')

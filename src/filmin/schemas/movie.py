@@ -17,7 +17,7 @@ class CreateMovieInDTO(BaseModel):
     original_language: Optional[str] = None
 
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
 
 
 class UpdateMovieInDTO(BaseModel):
@@ -32,7 +32,7 @@ class UpdateMovieInDTO(BaseModel):
     original_language: Optional[str] = None
 
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
 
 
 class UpdatePartialMovieInDTO(BaseModel):
@@ -47,4 +47,4 @@ class UpdatePartialMovieInDTO(BaseModel):
     original_language: Optional[str] = None
 
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True

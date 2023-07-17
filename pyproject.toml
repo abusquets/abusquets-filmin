@@ -46,7 +46,7 @@ section-order = ["future",
 known-first-party = []
 
 # Our local folders used on the project, must be added here, then they will be groupped together
-known-local-folder = ["app", "config", "core", "infra", "shared", "utils"]
+known-local-folder = ["app", "auth", "config", "core", "infra", "shared", "utils"]
 
 # Third party libraries used on the project, must be added here, then they will be groupped together
 known-third-party = ["beartype", "bcrypt", "colorlog", "fastapi", "pydantic", "pytest", "typer", "yaml"]
@@ -96,9 +96,9 @@ packages = []
 
 [tool.poetry.dependencies]
 python = "^3.11"
-fastapi = "0.95.2"
+fastapi = "^0.100.0"
 uvicorn = "0.22.0"
-pydantic = "1.10.7"
+pydantic = "2.0.2"
 pyyaml = "^6.0"
 colorlog = "^6.7.0"
 sqlalchemy = {extras = ["asyncpg"], version = "^2.0.15"}
@@ -109,6 +109,8 @@ httpx = "^0.24.1"
 click = "^8.1.3"
 pycountry = "^22.3.5"
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+redis = "^4.6.0"
+pydantic-settings = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
 debugpy = "^1.6.7"
@@ -118,12 +120,8 @@ pytest-cov = "^4.1.0"
 pytest-asyncio = "^0.21.0"
 poetry-types = "^0.4.0"
 beartype = "^0.14.1"
+types-redis = "^4.6.0.2"
 
-
-[tool.poetry.group.types.dependencies]
-types-pyyaml = "^6.0.12.10"
-types-sqlalchemy = "^1.4.53.38"
-types-click = "^7.1.8"
 
 [build-system]
 requires = ["poetry-core"]
