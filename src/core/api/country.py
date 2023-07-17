@@ -3,17 +3,17 @@ from typing import List
 from fastapi import Depends
 from fastapi.routing import APIRouter
 
-from core.data.repositories.ports.country import AbstractCountryRepository
 from core.domain.schemas.country import Country
+from core.domain.services.country import CountryService
 
 
 router = APIRouter(prefix='/country')
 
 
-def create_country_repository() -> AbstractCountryRepository:
+def get_country_service() -> CountryService:
     from app.app_container import AppContainer
 
-    return AppContainer().country_repository
+    return AppContainer().country_service
 
 
 @router.get(
@@ -24,10 +24,8 @@ def create_country_repository() -> AbstractCountryRepository:
         422: {'description': 'Unprocessable Entity'},
     },
 )
-async def get_country(
-    code: str, country_repository: AbstractCountryRepository = Depends(create_country_repository)
-) -> Country:
-    return await country_repository.get_by_id(code)
+async def get_country(code: str, country_service: CountryService = Depends(get_country_service)) -> Country:
+    return await country_service.get_country_by_id(code)
 
 
 @router.get(
@@ -35,6 +33,6 @@ async def get_country(
     responses={200: {'description': 'Successful Response'}},
 )
 async def list_countries(
-    country_repository: AbstractCountryRepository = Depends(create_country_repository),
+    country_service: CountryService = Depends(get_country_service),
 ) -> List[Country]:
-    return await country_repository.get_all()
+    return await country_service.get_all_countries()

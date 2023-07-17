@@ -1,6 +1,6 @@
-from .country import CountryRepositoryContainerMixin
+from .country import CountryContainerMixin
 from .user import UserServiceContainerMixin
 
 
-class CoreContainerMixin(CountryRepositoryContainerMixin, UserServiceContainerMixin):
+class CoreContainerMixin(CountryContainerMixin, UserServiceContainerMixin):
     pass
