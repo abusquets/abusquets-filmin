@@ -28,9 +28,9 @@ class DIContainer:
             return super().__getattribute__(name)
 
         if name not in self._register:
-            f = super().__getattribute__(f'_get_{name}')
-            ret = f()
-            if getattr(f, 'singleton', False):
+            fnc = super().__getattribute__(f'_get_{name}')
+            ret = fnc()
+            if getattr(fnc, 'singleton', False):
                 self._register[name] = ret
             return ret
         else:

@@ -12,11 +12,10 @@ from sqlalchemy.orm import sessionmaker
 
 from app.app_container import AppContainer, AppContainerMixin
 from app.asgi import app
-from auth.utils import create_access_token
+from auth.domain.services.token import TokenService
 from config import settings
-from core.data.repositories.ports.user import AbstractUserRepository
-from core.domain.schemas.user import User
-from core.schemas.user.create_user import CreateUserInDTO
+from core.domain.entities.user import User
+from core.domain.ports.repositories.user import AbstractUserRepository, CreateUserInDTO
 from infra.cache.memory_cache import MemoryCache
 from infra.cache.ports import AbstractCacheRepository
 import infra.database.sqlalchemy.models  # noqa
@@ -88,34 +87,43 @@ async def app_container(migrate_db: Any) -> AsyncGenerator:
 
 
 @pytest_asyncio.fixture(scope='session')
-async def user_repository(app_container: AppContainer) -> AsyncGenerator:
+async def user_repository(app_container: AppContainer) -> AsyncGenerator[AbstractUserRepository, None]:
     yield app_container.user_repository
 
 
 @pytest_asyncio.fixture(scope='session')
+async def token_service(app_container: AppContainer) -> AsyncGenerator[TokenService, None]:
+    yield app_container.token_service
+
+
+@pytest_asyncio.fixture(scope='session')
 async def admin_user(user_repository: AbstractUserRepository) -> AsyncGenerator[User, None]:
-    in_dto = CreateUserInDTO(email='admin@filmin.poc', first_name='Admin', password='123456', is_admin=True)
+    # We have to encrypt the password here because the password is not encrypted in the repository
+    password = User.encrypt_password('123456')
+    in_dto = CreateUserInDTO(email='admin@filmin.poc', first_name='Admin', password=password, is_admin=True)
     yield await user_repository.create(in_dto)
     await user_repository.delete(in_dto.email)
 
 
 @pytest_asyncio.fixture(scope='session')
 async def normal_user(user_repository: AbstractUserRepository) -> AsyncGenerator[User, None]:
-    in_dto = CreateUserInDTO(email='user@filmin.poc', first_name='Example', password='123456', is_admin=False)
+    # We have to encrypt the password here because the password is not encrypted in the repository
+    password = User.encrypt_password('123456')
+    in_dto = CreateUserInDTO(email='user@filmin.poc', first_name='Example', password=password, is_admin=False)
     yield await user_repository.create(in_dto)
     await user_repository.delete(in_dto.email)
 
 
 @pytest.fixture(scope='session')
-def admin_access_token(admin_user: User) -> str:
-    return create_access_token(
+def admin_access_token(admin_user: User, token_service: TokenService) -> str:
+    return token_service.create_access_token(
         admin_user.email, {'profile': {'first_name': admin_user.first_name, 'is_admin': admin_user.is_admin}}
     )
 
 
 @pytest.fixture(scope='session')
-def normal_user_access_token(normal_user: User) -> str:
-    return create_access_token(
+def normal_user_access_token(normal_user: User, token_service: TokenService) -> str:
+    return token_service.create_access_token(
         normal_user.email, {'profile': {'first_name': normal_user.first_name, 'is_admin': normal_user.is_admin}}
     )
 
