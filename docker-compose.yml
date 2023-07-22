@@ -13,8 +13,7 @@ services:
       - env-api-dev
     environment:
       DEBUGPY: ${DEBUGPY:-true}
-      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@${DB_HOST:-postgres}-woop:5432/${POSTGRES_DB:-filmin}
-      TEST_DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@${DB_HOST:-postgres}-test:5432/${POSTGRES_DB:-filmin}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@${DB_HOST:-postgres}:5432/${POSTGRES_DB:-filmin}
       WAIT_HOSTS: postgres:5432,postgres-test:5432,redis:6379
       WAIT_LOGGER_LEVEL: error
       WAIT_TIMEOUT: 60
