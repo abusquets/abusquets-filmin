@@ -1,0 +1,47 @@
+name: Check code and Pytest
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: filmin
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: psycopg prerequisites
+        run: sudo apt-get install libpq-dev
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry ruff
+          poetry install
+      
+      - name: Lint with ruff
+        run: |
+          ruff --format=github src/
+      
+      - name: Test with pytest
+        working-directory: ./src
+        run: |
+          poetry run pytest -c pytest.github.ini
