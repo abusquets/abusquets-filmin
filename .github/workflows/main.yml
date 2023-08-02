@@ -48,5 +48,6 @@ jobs:
       #     ruff --format=github --target-version=py37 .
       
       - name: Test with pytest
+        working-directory: ./src
         run: |
           python -m poetry run pytest
