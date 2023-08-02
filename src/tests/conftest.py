@@ -1,6 +1,7 @@
 import asyncio
 
 from asyncio import current_task
+import os
 from typing import Any, AsyncGenerator, Generator, Iterator
 
 from httpx import AsyncClient
@@ -20,6 +21,14 @@ from core.schemas.user.create_user import CreateUserInDTO
 import infra.database.sqlalchemy.models  # noqa
 
 from infra.database.sqlalchemy.sqlalchemy import metadata
+
+
+@pytest.fixture(scope='session', autouse=True)
+def set_database_url_for_test() -> Iterator[None]:
+    previous = os.getenv('DATABASE_URL', '')
+    os.environ['DATABASE_URL'] = os.getenv('TEST_DATABASE_URL', '')
+    yield
+    os.environ['DATABASE_URL'] = previous
 
 
 @pytest.fixture(scope='session')
@@ -62,6 +71,7 @@ async def drop_all(engine: AsyncEngine) -> None:
 
 @pytest.fixture(scope='session', autouse=True)
 def migrate_db(event_loop: asyncio.AbstractEventLoop, engine: AsyncEngine) -> Iterator[None]:
+    assert os.environ['DATABASE_URL'] == os.getenv('TEST_DATABASE_URL')
     event_loop.run_until_complete(create_all(engine))
     yield
     event_loop.run_until_complete(drop_all(engine))

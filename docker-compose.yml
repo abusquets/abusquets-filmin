@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
   api:
     container_name: api.filmin
@@ -14,7 +14,8 @@ services:
     environment:
       DEBUGPY: ${DEBUGPY:-true}
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@${DB_HOST:-postgres}:5432/${POSTGRES_DB:-filmin}
-      WAIT_HOSTS: postgres:5432
+      TEST_DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@${DB_HOST:-postgres}-test:5432/${POSTGRES_DB:-filmin}
+      WAIT_HOSTS: postgres:5432,postgres-test:5432,redis:6379
       WAIT_LOGGER_LEVEL: error
       WAIT_TIMEOUT: 60
       WAIT_SLEEP_INTERVAL: 5
@@ -22,6 +23,10 @@ services:
       REDIS_URL: ${REDIS_URL-redis://redis:6379/0}
       REDIS_USER: ${REDIS_USER-default}
       REDIS_PASSWORD: ${REDIS_PASSWORD-redis}
+    depends_on:
+      - postgres
+      - postgres-test
+      - redis
 
     volumes:
       - ./src/:/app:cached
@@ -55,7 +60,16 @@ services:
       PGPASSWORD: ${PGPASSWORD-postgres}
       PGUSER: ${PGUSER-postgres}
       PHOST: localhost
-    command: ["postgres", "-c", "max_connections=1000", "-c", "log_statement=all", "-c", "log_destination=stderr"]
+    command:
+      [
+        "postgres",
+        "-c",
+        "max_connections=1000",
+        "-c",
+        "log_statement=all",
+        "-c",
+        "log_destination=stderr",
+      ]
     ports:
       - 5432:5432
     volumes:
@@ -81,12 +95,11 @@ services:
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD-redis}
     command:
-    - /bin/sh
-    - -c
-    - redis-server --appendonly yes --requirepass $$REDIS_PASSWORD
+      - /bin/sh
+      - -c
+      - redis-server --appendonly yes --requirepass $$REDIS_PASSWORD
     volumes:
       - redis_data:/data:delegated
-
 
 volumes:
   postgres_data:
