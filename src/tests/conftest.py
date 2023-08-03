@@ -10,16 +10,19 @@ import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_scoped_session, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.app_container import AppContainer
+from app.app_container import AppContainer, AppContainerMixin
 from app.asgi import app
 from auth.utils import create_access_token
 from config import settings
 from core.data.repositories.ports.user import AbstractUserRepository
 from core.domain.schemas.user import User
 from core.schemas.user.create_user import CreateUserInDTO
+from infra.cache.memory_cache import MemoryCache
+from infra.cache.ports import AbstractCacheRepository
 import infra.database.sqlalchemy.models  # noqa
 
 from infra.database.sqlalchemy.sqlalchemy import metadata
+from utils.di import di_singleton
 
 
 @pytest.fixture(scope='session')
@@ -129,3 +132,14 @@ async def async_normal_client(normal_user_access_token: str) -> AsyncClient:
     async with AsyncClient(app=app, base_url='http://test/api/v1') as ac:
         ac.headers.update({'Authorization': f'Bearer {normal_user_access_token}'})
         yield ac
+
+
+@pytest.fixture(autouse=True)
+def memory_cache_database(monkeypatch: pytest.MonkeyPatch) -> Generator[None, None, None]:
+    @di_singleton
+    def fake_cache_gateway() -> AbstractCacheRepository:
+        return MemoryCache()
+
+    monkeypatch.setattr(AppContainerMixin, '_get_cache_repository', lambda _: fake_cache_gateway())
+
+    yield
