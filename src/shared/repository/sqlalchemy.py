@@ -1,10 +1,10 @@
-from typing import Any, AsyncContextManager, AsyncIterator, Callable, List, Optional, Self, Tuple, Type, TypeVar, cast
+from typing import Any, AsyncContextManager, Callable, List, Optional, Self, Tuple, Type, TypeVar, cast
 
 from pydantic import BaseModel
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import noload
-from sqlalchemy.sql import Select, func, select, update
+from sqlalchemy.sql import Select, func, select
 
 from shared.exceptions import NotFound
 from shared.repository.ports.generic import AbstractRepository, FilterBy
