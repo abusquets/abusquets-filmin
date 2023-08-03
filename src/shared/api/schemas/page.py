@@ -1,5 +1,5 @@
 from enum import IntEnum
-from typing import Generic, List, Type, TypeVar
+from typing import Generic, List, TypeVar
 
 from pydantic import BaseModel, Field
 
