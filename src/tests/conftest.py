@@ -1,7 +1,7 @@
 import asyncio
 
 from asyncio import current_task
-from typing import Any, AsyncGenerator, Generator, Iterator
+from typing import AsyncGenerator, Generator, Iterator
 
 from httpx import AsyncClient
 import pytest
@@ -24,8 +24,31 @@ from infra.database.sqlalchemy.sqlalchemy import metadata
 from utils.di import di_singleton
 
 
-@pytest.fixture(scope='session')
-def event_loop() -> Iterator[asyncio.AbstractEventLoop]:
+def pytest_addoption(parser: pytest.Parser) -> None:
+    # NOTE: when adding or removing an option,
+    # remove to remove/add from app/conftest.py:addoption_params
+    parser.addoption('--no-db', default=False, action='store_true', help='Disable testing database')
+
+
+def addoption_params(config: pytest.Config) -> dict[str, bool]:
+    return {
+        'no-db': config.getoption('--no-db'),
+    }
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    params = addoption_params(config)
+    if not params.get('no-db'):
+        next(_event_loop()).run_until_complete(create_all(_engine()))
+
+
+def pytest_unconfigure(config: pytest.Config) -> None:
+    params = addoption_params(config)
+    if not params.get('no-db'):
+        next(_event_loop()).run_until_complete(drop_all(_engine()))
+
+
+def _event_loop() -> Iterator[asyncio.AbstractEventLoop]:
     try:
         loop = asyncio.get_event_loop()
     except RuntimeError as e:
@@ -39,9 +62,18 @@ def event_loop() -> Iterator[asyncio.AbstractEventLoop]:
     loop.close()
 
 
+@pytest.fixture(scope='session')
+def event_loop() -> Iterator[asyncio.AbstractEventLoop]:
+    yield from _event_loop()
+
+
+def _engine() -> AsyncEngine:
+    return create_async_engine(settings.DATABASE_URL, future=True, echo=False)
+
+
 @pytest.fixture(scope='session', autouse=True)
 def engine() -> Generator:
-    yield create_async_engine(settings.DATABASE_URL, future=True, echo=False)
+    yield _engine()
 
 
 @pytest.fixture(scope='session')
@@ -62,13 +94,6 @@ async def drop_all(engine: AsyncEngine) -> None:
         await conn.run_sync(metadata.drop_all)
 
 
-@pytest.fixture(scope='session', autouse=True)
-def migrate_db(event_loop: asyncio.AbstractEventLoop, engine: AsyncEngine) -> Iterator[None]:
-    event_loop.run_until_complete(create_all(engine))
-    yield
-    event_loop.run_until_complete(drop_all(engine))
-
-
 @pytest_asyncio.fixture(scope='session')
 async def async_root_client() -> AsyncClient:
     async with AsyncClient(app=app, base_url='http://test') as ac:
@@ -82,7 +107,7 @@ async def async_client() -> AsyncClient:
 
 
 @pytest_asyncio.fixture(scope='session')
-async def app_container(migrate_db: Any) -> AsyncGenerator:
+async def app_container() -> AsyncGenerator:
     yield AppContainer()
 
 

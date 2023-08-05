@@ -4,7 +4,7 @@ from sqlalchemy.orm import registry
 from core.domain.entities.user import User
 from core.domain.ports.repositories.user import AbstractUserRepository, CreateUserInDTO, UpdatePartialUserInDTO
 from infra.database.sqlalchemy.models.core.user import users
-from shared.exceptions import AlreadyExists
+from shared.exceptions import AlreadyExistsError
 from shared.repository.sqlalchemy import SqlAlchemyRepository
 
 
@@ -28,5 +28,5 @@ class UserRepository(
             ret = await super().create(data)
         except IntegrityError as e:
             if 'duplicate key value violates unique constraint "uq_core_user_email"' in str(e):
-                raise AlreadyExists(User.__name__)
+                raise AlreadyExistsError(User.__name__)
         return ret

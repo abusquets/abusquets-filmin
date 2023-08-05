@@ -18,7 +18,7 @@ async def test_use_refresh_token_error(async_client: AsyncClient, token_service:
 
 @pytest.mark.asyncio
 async def test_expired_token(async_client: AsyncClient) -> None:
-    access_token = TokenService._create_token(
+    access_token = TokenService._create_token(  # noqa: SLF001
         'a', 'admin@admin.poc', {'profile': {'first_name': 'Admin', 'is_admin': True}}, -1
     )
     async_client.headers.update({'Authorization': f'Bearer {access_token}'})

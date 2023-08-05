@@ -8,7 +8,7 @@ from app.app_container import AppContainer
 from core.adapters.api.cli.user_presenter import UserPresenter
 from core.domain.services.user import CreateUserInDTO, UserService
 from core.domain.use_cases.user import CreateUserUseCase
-from shared.exceptions import AlreadyExists
+from shared.exceptions import AlreadyExistsError
 from utils.async_utils import async_exec
 
 
@@ -36,9 +36,9 @@ async def _create_admin(email: str, first_name: str, password: str) -> None:
     try:
         await use_case.execute(in_dto)
         user = presenter.result
-        print(f'The User {user.first_name}, {user.email} has been created')
-    except AlreadyExists as e:
-        print(f'Error: {e.message}')
+        click.echo(f'The User {user.first_name}, {user.email} has been created')
+    except AlreadyExistsError as e:
+        click.echo(f'Error: {e.message}')
         raise click.Abort()
 
 

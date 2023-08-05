@@ -1,13 +1,13 @@
 from typing import Any
 
 
-class APPException(Exception):
+class APPExceptionError(Exception):
     status_code = 500
     code = 'app-exception'
     message = 'An error occurred'
 
 
-class NotFound(APPException):
+class NotFoundError(APPExceptionError):
     status_code = 404
     code: str
     message: str
@@ -18,7 +18,7 @@ class NotFound(APPException):
         super().__init__(*args, **kwargs)
 
 
-class AlreadyExists(APPException):
+class AlreadyExistsError(APPExceptionError):
     status_code = 422
     code: str
     message: str

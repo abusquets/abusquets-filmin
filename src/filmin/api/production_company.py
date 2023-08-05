@@ -14,7 +14,7 @@ from filmin.data.repositories.ports.production_company import AbstractProduction
 from filmin.domain.schemas.production_company import ProductionCompany
 from filmin.schemas.production_company import CreateProductionCompanyInDTO, UpdatePartialProductionCompanyInDTO
 
-from app.exceptions import EmptyPayloadException
+from app.exceptions import EmptyPayloadExceptionError
 from shared.api.schemas.page import PagedResponseSchema, PageParams
 
 
@@ -114,6 +114,6 @@ async def update_production_company_partially(
 ) -> ProductionCompany:
     in_data = request_data.model_dump(exclude_unset=True)
     if not in_data.keys():
-        raise EmptyPayloadException()
+        raise EmptyPayloadExceptionError()
     in_dto = UpdatePartialProductionCompanyInDTO.model_validate(in_data)
     return await production_company_repository.update(uuid, in_dto)

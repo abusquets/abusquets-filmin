@@ -1,3 +1,5 @@
+from typing import Type
+
 from pydantic import validator
 
 from core.domain.entities.user import User
@@ -9,7 +11,8 @@ from core.domain.ports.repositories.user import (
 
 class CreateUserInDTO(CreateUserInRepoDTO):
     @validator('password', pre=True, always=True)
-    def check_password(cls, v: str) -> str:
+    @classmethod
+    def check_password(cls: Type['CreateUserInDTO'], v: str) -> str:
         return User.encrypt_password(v)
 
 

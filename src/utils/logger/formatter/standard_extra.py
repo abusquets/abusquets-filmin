@@ -1,9 +1,11 @@
 import logging
 
+from typing import ClassVar, List
+
 
 class FormatterExtra(logging.Formatter):
     # From: https://docs.python.org/3/library/logging.html#logrecord-attributes
-    reserved = [
+    reserved: ClassVar[List[str]] = [
         'args',
         'asctime',
         'created',

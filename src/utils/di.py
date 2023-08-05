@@ -33,5 +33,5 @@ class DIContainer:
             if getattr(fnc, 'singleton', False):
                 self._register[name] = ret
             return ret
-        else:
-            return self._register[name]
+
+        return self._register[name]

@@ -1,10 +1,10 @@
 from core.domain.entities.user import User
 from core.domain.services.user import CreateUserInDTO, UserService
-from shared.exceptions import APPException
+from shared.exceptions import APPExceptionError
 from shared.presenter import AbstractPresenter
 
 
-class InvalidPasswordException(APPException):
+class InvalidPasswordExceptionError(APPExceptionError):
     status_code = 401
     code = 'invalid-password'
     message = 'Invalid password'
@@ -28,6 +28,6 @@ class GetUserAndVerifyPasswordUseCase:
     async def execute(self, username: str, password: str) -> None:
         user = await self.service.get_user_by_username(username)
         if not User.verify_password(password, user.password):
-            raise InvalidPasswordException()
+            raise InvalidPasswordExceptionError()
 
         await self.presenter.present(user)

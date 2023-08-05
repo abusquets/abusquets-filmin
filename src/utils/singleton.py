@@ -4,12 +4,12 @@ import threading
 from typing import Any, Type, TypeVar, cast
 
 
-instanceT = TypeVar('instanceT')
-wrappedT = TypeVar('wrappedT')
+InstanceT = TypeVar('InstanceT')
+WrappedT = TypeVar('WrappedT')
 
 
-decoratedT = TypeVar('decoratedT', bound=Type[Any])
-resultT = Any
+DecoratedT = TypeVar('DecoratedT', bound=Type[Any])
+ResultT = Any
 
 
 class _SingletonWrapper:
@@ -18,12 +18,12 @@ class _SingletonWrapper:
     for each decorated class.
     """
 
-    def __init__(self, cls: decoratedT) -> None:
-        self.__wrapped__: decoratedT = cls
-        self._instance: resultT = None
+    def __init__(self, cls: DecoratedT) -> None:
+        self.__wrapped__: DecoratedT = cls
+        self._instance: ResultT = None
         self._lock = threading.Lock()
 
-    def __call__(self, *args: Any, **kwargs: Any) -> resultT:
+    def __call__(self, *args: Any, **kwargs: Any) -> ResultT:
         """Returns a single instance of decorated class"""
         if self._instance is None:
             with self._lock:
@@ -32,10 +32,10 @@ class _SingletonWrapper:
         return self._instance
 
 
-def singleton(cls: decoratedT) -> decoratedT:
+def singleton(cls: DecoratedT) -> DecoratedT:
     """
     A singleton decorator. Returns a wrapper objects. A call on that object
     returns a single instance object of decorated class. Use the __wrapped__
     attribute to access decorated class directly in unit tests
     """
-    return cast(decoratedT, _SingletonWrapper(cls))
+    return cast(DecoratedT, _SingletonWrapper(cls))

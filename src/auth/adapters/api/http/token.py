@@ -10,8 +10,8 @@ from auth.adapters.api.http.schemas import LoginResponse, ProtectedResponse, Ref
 from auth.domain.services.token import TokenService
 from core.adapters.api.cli.user_presenter import UserPresenter
 from core.domain.services.user import UserService
-from core.domain.use_cases.user import GetUserAndVerifyPasswordUseCase, InvalidPasswordException
-from shared.exceptions import NotFound
+from core.domain.use_cases.user import GetUserAndVerifyPasswordUseCase, InvalidPasswordExceptionError
+from shared.exceptions import NotFoundError
 
 
 router = APIRouter()
@@ -37,7 +37,7 @@ async def login(
     try:
         await get_user_use_case.execute(payload.email, payload.password)
         user = user_presenter.result
-    except (NotFound, InvalidPasswordException) as exc:
+    except (NotFoundError, InvalidPasswordExceptionError) as exc:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Incorrect email or password') from exc
 
     claims: Dict[str, Any] = {

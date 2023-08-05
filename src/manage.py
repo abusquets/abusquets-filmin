@@ -19,7 +19,7 @@ for command in auth.adapters.api.cli.commands:
 
 
 async def _test() -> None:
-    print('Manage is working fine')
+    click.echo('Manage is working fine')
 
 
 @cli_app.command()

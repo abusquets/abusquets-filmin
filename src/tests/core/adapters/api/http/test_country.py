@@ -5,7 +5,7 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_country_list(migrate_db: Any, async_client: AsyncClient, country_spain: Any) -> None:
+async def test_country_list(async_client: AsyncClient, country_spain: Any) -> None:  # noqa: ARG001
     response = await async_client.get('/core/country')
     assert response.status_code == 200
     result = response.json()
@@ -14,7 +14,7 @@ async def test_country_list(migrate_db: Any, async_client: AsyncClient, country_
 
 
 @pytest.mark.asyncio
-async def test_country_detail(migrate_db: Any, async_client: AsyncClient, country_spain: Any) -> None:
+async def test_country_detail(async_client: AsyncClient, country_spain: Any) -> None:  # noqa: ARG001
     response = await async_client.get('/core/country/ES')
     assert response.status_code == 200
     result = response.json()
