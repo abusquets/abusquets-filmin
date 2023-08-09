@@ -1,10 +1,9 @@
 from sqlalchemy.orm import registry
 
-from filmin.domain.schemas.production_company import ProductionCompany
-from filmin.schemas.production_company import CreateProductionCompanyInDTO, UpdatePartialProductionCompanyInDTO
-
 from .ports.production_company import AbstractProductionCompanyRepository
-from infra.database.sqlalchemy.models.filmin import production_company
+from filmin.domain.schemas.production_company import ProductionCompany
+from filmin.infra.database.sqlalchemy.models import production_company
+from filmin.schemas.production_company import CreateProductionCompanyInDTO, UpdatePartialProductionCompanyInDTO
 from shared.repository.sqlalchemy import SqlAlchemyRepository
 
 

@@ -4,6 +4,7 @@ from fastapi import Depends
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRouter
 
+from app.exceptions import EmptyPayloadExceptionError
 from filmin.api.schemas.movie import (
     CreateMovieRequestDTO,
     CreateMovieResponseDTO,
@@ -12,8 +13,6 @@ from filmin.api.schemas.movie import (
 from filmin.data.repositories.ports.movie import AbstractMovieRepository
 from filmin.domain.schemas.movie import Movie
 from filmin.schemas.movie import CreateMovieInDTO, UpdatePartialMovieInDTO
-
-from app.exceptions import EmptyPayloadExceptionError
 from shared.api.schemas.page import PagedResponseSchema, PageParams
 
 

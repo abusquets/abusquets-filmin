@@ -61,6 +61,7 @@ known-local-folder = [
     "auth",
     "config",
     "core",
+    "filmin",
     "infra",
     "shared",
     "utils",

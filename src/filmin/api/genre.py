@@ -4,6 +4,9 @@ from fastapi import Depends
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRouter
 
+from app.exceptions import EmptyPayloadExceptionError
+from app.schemas import Session
+from app.session_deps import check_access_token, is_admin_session
 from filmin.api.schemas.genre import (
     CreateGenreRequestDTO,
     CreateGenreResponseDTO,
@@ -13,10 +16,6 @@ from filmin.api.schemas.genre import (
 from filmin.data.repositories.ports.genre import AbstractGenreRepository
 from filmin.domain.schemas.genre import Genre
 from filmin.schemas.genre import CreateGenreInDTO, UpdatePartialGenreInDTO
-
-from app.exceptions import EmptyPayloadExceptionError
-from app.schemas import Session
-from app.session_deps import check_access_token, is_admin_session
 from shared.api.schemas.page import PagedResponseSchema, PageParams
 
 

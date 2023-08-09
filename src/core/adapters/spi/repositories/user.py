@@ -3,7 +3,7 @@ from sqlalchemy.orm import registry
 
 from core.domain.entities.user import User
 from core.domain.ports.repositories.user import AbstractUserRepository, CreateUserInDTO, UpdatePartialUserInDTO
-from infra.database.sqlalchemy.models.core.user import users
+from core.infra.database.sqlalchemy.models.user import users
 from shared.exceptions import AlreadyExistsError
 from shared.repository.sqlalchemy import SqlAlchemyRepository
 

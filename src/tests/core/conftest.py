@@ -4,7 +4,7 @@ import pytest_asyncio
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from infra.database.sqlalchemy.models.core.country import countries
+from core.infra.database.sqlalchemy.models.country import countries
 
 
 AsyncSessionCtxT = Callable[[], AsyncContextManager[AsyncSession]]

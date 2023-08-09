@@ -1,8 +1,7 @@
-from filmin.di.mixins import FilminContainerMixin
-
 from auth.di.mixins.token import TokenContainerMixin
 from config import settings
 from core.di.mixins import CoreContainerMixin
+from filmin.di.mixins import FilminContainerMixin
 from infra.cache.ports import AbstractCacheRepository
 from infra.database.sqlalchemy.session import AbstractDatabase
 from utils.di import DIContainer, di_singleton

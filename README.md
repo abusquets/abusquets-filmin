@@ -14,6 +14,9 @@ python manage.py {user_email} {name}
 
 # Migrations
 
+:warning: **WIP, not tested with multiple folders**
+
+
 ```bash
 alembic init -t async migrations
 ```

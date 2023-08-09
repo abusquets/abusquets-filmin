@@ -6,9 +6,9 @@ import pytest_asyncio
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from infra.database.sqlalchemy.models.filmin.collection import movie_collection
-from infra.database.sqlalchemy.models.filmin.genre import genres
-from infra.database.sqlalchemy.models.filmin.movie import movie, movie_genre
+from filmin.infra.database.sqlalchemy.models.collection import movie_collection
+from filmin.infra.database.sqlalchemy.models.genre import genres
+from filmin.infra.database.sqlalchemy.models.movie import movie, movie_genre
 
 
 AsyncSessionCtxT = Callable[[], AsyncContextManager[AsyncSession]]
