@@ -1,6 +1,5 @@
 from filmin.data.repositories.ports.genre import AbstractGenreRepository
 from filmin.data.repositories.ports.movie import AbstractMovieRepository
-
 from infra.database.sqlalchemy.session import AbstractDatabase
 
 

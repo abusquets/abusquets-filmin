@@ -4,7 +4,7 @@ from core.domain.dtos.country.create_country import CreateCountryInDTO
 from core.domain.dtos.country.update_country import UpdatePartialCountryInDTO
 from core.domain.entities.country import Country
 from core.domain.ports.repositories.country import AbstractCountryRepository
-from infra.database.sqlalchemy.models.core.country import countries
+from core.infra.database.sqlalchemy.models.country import countries
 from shared.repository.sqlalchemy import SqlAlchemyRepository
 
 

@@ -6,13 +6,12 @@ from typing import AsyncIterator
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from filmin.api.router import router as filmin_router
-
 from .app_container import AppContainer
 from app.setup_logging import setup_logging
 from auth.adapters.api.http.router import router as auth_router
 from config import settings
 from core.adapters.api.http.router import router as core_router
+from filmin.api.router import router as filmin_router
 from shared.exceptions import APPExceptionError
 
 

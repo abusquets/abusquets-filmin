@@ -16,10 +16,12 @@ from auth.domain.services.token import TokenService
 from config import settings
 from core.domain.entities.user import User
 from core.domain.ports.repositories.user import AbstractUserRepository, CreateUserInDTO
+import core.infra.database.sqlalchemy.models  # noqa
+import filmin.infra.database.sqlalchemy.models  # noqa
+
 from infra.cache.memory_cache import MemoryCache
 from infra.cache.ports import AbstractCacheRepository
 import infra.database.sqlalchemy.models  # noqa
-
 from infra.database.sqlalchemy.sqlalchemy import metadata
 from utils.di import di_singleton
 

@@ -3,15 +3,14 @@ from typing import AsyncContextManager, Callable, Dict, List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import registry, relationship
 
+from .ports.movie import AbstractMovieRepository
 from filmin.data.repositories.ports.genre import AbstractGenreRepository
 from filmin.domain.schemas.genre import Genre
 from filmin.domain.schemas.movie import Movie
 from filmin.domain.schemas.movie_collection import MovieCollection
+from filmin.infra.database.sqlalchemy.models.collection import movie_collection
+from filmin.infra.database.sqlalchemy.models.movie import movie, movie_genre
 from filmin.schemas.movie import CreateMovieInDTO, UpdatePartialMovieInDTO
-
-from .ports.movie import AbstractMovieRepository
-from infra.database.sqlalchemy.models.filmin.collection import movie_collection
-from infra.database.sqlalchemy.models.filmin.movie import movie, movie_genre
 from shared.repository.sqlalchemy import SqlAlchemyRepository
 
 

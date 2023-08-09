@@ -1,5 +1,4 @@
 from filmin.data.repositories.ports.production_company import AbstractProductionCompanyRepository
-
 from infra.database.sqlalchemy.session import AbstractDatabase
 
 
