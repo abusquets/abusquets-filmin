@@ -3,14 +3,17 @@ import abc
 from contextlib import asynccontextmanager
 import contextvars
 import logging
-from typing import Any, AsyncContextManager, AsyncIterator, Dict, Optional, cast
+from typing import TYPE_CHECKING, Any, AsyncContextManager, AsyncIterator, Dict, Optional, cast
 
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.ext.asyncio.engine import AsyncEngine
 from sqlalchemy.orm import sessionmaker
 
 from config import settings
 from utils.singleton import singleton
+
+
+if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio.engine import AsyncEngine
 
 
 logger = logging.getLogger(__name__)

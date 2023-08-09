@@ -14,6 +14,6 @@ def setup_logging() -> None:
     if env == 'test':
         env = 'dev'
     path = f'logging.{env}.yaml'
-    with open(path, 'rt') as file:
+    with open(path, 'rt', encoding='utf-8') as file:
         config = yaml.safe_load(file.read())
         logging.config.dictConfig(config)

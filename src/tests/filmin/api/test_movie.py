@@ -6,11 +6,10 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_movie_create(
-    migrate_db: Any,
-    clean_movie: Any,
+    clean_movie: Any,  # noqa: ARG001
     async_client: AsyncClient,
-    genre_comedy: Any,
-    genre_animation: Any,
+    genre_comedy: Any,  # noqa: ARG001
+    genre_animation: Any,  # noqa: ARG001
     collection_toy_story: str,
 ) -> None:
     data = {
@@ -38,7 +37,7 @@ async def test_movie_create(
 
 @pytest.mark.asyncio
 async def test_movie_detail(
-    migrate_db: Any, clean_movie: Any, async_client: AsyncClient, movie_toy_story2: Any, collection_toy_story: str
+    clean_movie: Any, async_client: AsyncClient, movie_toy_story2: Any, collection_toy_story: str  # noqa: ARG001
 ) -> None:
     response = await async_client.get(f'/filmin/movie/{movie_toy_story2}')
     assert response.status_code == 200
@@ -57,7 +56,7 @@ async def test_movie_detail(
 
 @pytest.mark.asyncio
 async def test_movie_list(
-    migrate_db: Any, clean_movie: Any, async_client: AsyncClient, collection_toy_story: str, movie_toy_story2: str
+    clean_movie: Any, async_client: AsyncClient, collection_toy_story: str, movie_toy_story2: str  # noqa: ARG001
 ) -> None:
     response = await async_client.get('/filmin/movie')
     assert response.status_code == 200
@@ -92,11 +91,10 @@ async def test_movie_list(
     ],
 )
 async def test_movie_update_partial(
-    migrate_db: Any,
-    clean_movie: Any,
+    clean_movie: Any,  # noqa: ARG001
     async_client: AsyncClient,
     movie_toy_story2: Any,
-    collection_fake: str,
+    collection_fake: str,  # noqa: ARG001
     attribute: str,
     value: str,
 ) -> None:
@@ -112,7 +110,7 @@ async def test_movie_update_partial(
 
 @pytest.mark.asyncio
 async def test_movie_update_partial_collection(
-    migrate_db: Any, clean_movie: Any, async_client: AsyncClient, movie_toy_story2: Any, collection_fake: str
+    clean_movie: Any, async_client: AsyncClient, movie_toy_story2: Any, collection_fake: str  # noqa: ARG001
 ) -> None:
     data = {'collection': collection_fake}
     response = await async_client.patch(f'/filmin/movie/{movie_toy_story2}', json=data)
@@ -124,7 +122,7 @@ async def test_movie_update_partial_collection(
 
 @pytest.mark.asyncio
 async def test_movie_update_genres(
-    migrate_db: Any, clean_movie: Any, async_client: AsyncClient, movie_toy_story2: Any, genre_fake: str
+    clean_movie: Any, async_client: AsyncClient, movie_toy_story2: Any, genre_fake: str  # noqa: ARG001
 ) -> None:
     data = {'genres': ['animation', 'fake-genre']}
     response = await async_client.patch(f'/filmin/movie/{movie_toy_story2}', json=data)

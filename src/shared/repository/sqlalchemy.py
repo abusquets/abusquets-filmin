@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import noload
 from sqlalchemy.sql import Select, func, select
 
-from shared.exceptions import NotFound
+from shared.exceptions import NotFoundError
 from shared.repository.ports.generic import AbstractRepository, FilterBy
 
 
@@ -19,7 +19,7 @@ class SqlAlchemyRepository(AbstractRepository[EntityT, CreateT, UpdateT]):
     entity: Type[EntityT]
     key = 'uuid'
 
-    def __new__(cls, *args: Any, **kwargs: Any) -> Self:
+    def __new__(cls, *args: Any, **kwargs: Any) -> Self:  # noqa: ARG003
         base: Optional[Tuple[Any, ...]] = getattr(cls, '__orig_bases__', None)
         if base:
             generics: Tuple[Type[EntityT], Type[CreateT], Type[UpdateT]] = base[0].__args__
@@ -40,7 +40,7 @@ class SqlAlchemyRepository(AbstractRepository[EntityT, CreateT, UpdateT]):
                 results = await session.execute(query)
                 (result,) = results.one()
         except NoResultFound:
-            raise NotFound(self.entity.__name__)
+            raise NotFoundError(self.entity.__name__)
         else:
             return cast(EntityT, result)
 
@@ -90,4 +90,4 @@ class SqlAlchemyRepository(AbstractRepository[EntityT, CreateT, UpdateT]):
     async def delete(self, uuid: str) -> None:
         async with self.session_factory() as session:
             instance = await self.get_by_id(uuid)
-            session.delete(instance)
+            await session.delete(instance)

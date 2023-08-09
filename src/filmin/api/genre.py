@@ -14,7 +14,7 @@ from filmin.data.repositories.ports.genre import AbstractGenreRepository
 from filmin.domain.schemas.genre import Genre
 from filmin.schemas.genre import CreateGenreInDTO, UpdatePartialGenreInDTO
 
-from app.exceptions import EmptyPayloadException
+from app.exceptions import EmptyPayloadExceptionError
 from app.schemas import Session
 from app.session_deps import check_access_token, is_admin_session
 from shared.api.schemas.page import PagedResponseSchema, PageParams
@@ -121,6 +121,6 @@ async def update_genre_partially(
 ) -> Genre:
     in_data = request_data.model_dump(exclude_unset=True)
     if not in_data.keys():
-        raise EmptyPayloadException()
+        raise EmptyPayloadExceptionError()
     in_dto = UpdatePartialGenreInDTO.model_validate(in_data)
     return await genre_repository.update(code, in_dto)

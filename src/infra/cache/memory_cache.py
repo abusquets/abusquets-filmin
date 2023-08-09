@@ -24,8 +24,8 @@ class MemoryCache(AbstractCacheRepository):
             if ret is not None:
                 if ret[1] < time.time():
                     return ret[0]
-                else:
-                    self._data.pop(key, None)
+                self._data.pop(key, None)
+            return None
 
     async def set(self, key: str, value: Union[EncodableT, None], expire: int) -> None:
         with self.lock:

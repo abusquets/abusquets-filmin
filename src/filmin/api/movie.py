@@ -13,7 +13,7 @@ from filmin.data.repositories.ports.movie import AbstractMovieRepository
 from filmin.domain.schemas.movie import Movie
 from filmin.schemas.movie import CreateMovieInDTO, UpdatePartialMovieInDTO
 
-from app.exceptions import EmptyPayloadException
+from app.exceptions import EmptyPayloadExceptionError
 from shared.api.schemas.page import PagedResponseSchema, PageParams
 
 
@@ -115,6 +115,6 @@ async def update_movie_partially(
 ) -> Movie:
     in_data = request_data.model_dump(exclude_unset=True)
     if not in_data.keys():
-        raise EmptyPayloadException()
+        raise EmptyPayloadExceptionError()
     in_dto = UpdatePartialMovieInDTO.model_validate(in_data)
     return await movie_repository.update(uuid, in_dto)

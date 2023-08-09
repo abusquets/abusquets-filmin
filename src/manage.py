@@ -1,7 +1,7 @@
 import click
 
-import auth.cli
-import core.cli
+import auth.adapters.api.cli
+import core.adapters.api.cli
 
 from utils.async_utils import async_exec
 
@@ -11,15 +11,15 @@ def cli_app() -> None:
     pass
 
 
-for command in core.cli.commands:
+for command in core.adapters.api.cli.commands:
     cli_app.command()(command)
 
-for command in auth.cli.commands:
+for command in auth.adapters.api.cli.commands:
     cli_app.command()(command)
 
 
 async def _test() -> None:
-    print('Manage is working fine')
+    click.echo('Manage is working fine')
 
 
 @cli_app.command()

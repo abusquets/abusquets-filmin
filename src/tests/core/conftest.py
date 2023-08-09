@@ -1,4 +1,4 @@
-from typing import Any, AsyncContextManager, Callable
+from typing import AsyncContextManager, Callable
 
 import pytest_asyncio
 
@@ -11,7 +11,7 @@ AsyncSessionCtxT = Callable[[], AsyncContextManager[AsyncSession]]
 
 
 @pytest_asyncio.fixture(scope='session')
-async def country_spain(migrate_db: Any, async_session_maker: AsyncSessionCtxT) -> None:
+async def country_spain(async_session_maker: AsyncSessionCtxT) -> None:
     async with async_session_maker() as session:
         statement = countries.insert().values(code='ES', name='Spain')
         await session.execute(statement)

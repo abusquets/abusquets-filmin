@@ -1,11 +1,11 @@
 from filmin.di.mixins import FilminContainerMixin
 
+from auth.di.mixins.token import TokenContainerMixin
 from config import settings
 from core.di.mixins import CoreContainerMixin
 from infra.cache.ports import AbstractCacheRepository
 from infra.database.sqlalchemy.session import AbstractDatabase
 from utils.di import DIContainer, di_singleton
-from utils.singleton import singleton
 
 
 class AppContainerMixin:
@@ -28,6 +28,6 @@ class AppContainerMixin:
         )
 
 
-@singleton
-class AppContainer(CoreContainerMixin, FilminContainerMixin, AppContainerMixin, DIContainer):
+# @singleton
+class AppContainer(CoreContainerMixin, FilminContainerMixin, TokenContainerMixin, AppContainerMixin, DIContainer):
     pass

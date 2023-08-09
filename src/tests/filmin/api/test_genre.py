@@ -12,7 +12,7 @@ async def test_genre_create(async_admin_client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_genre_list(async_normal_client: AsyncClient, genre_western: str) -> None:
+async def test_genre_list(async_normal_client: AsyncClient, genre_western: str) -> None:  # noqa: ARG001
     response = await async_normal_client.get('/filmin/genre')
     assert response.status_code == 200
     paginated_result = response.json()
