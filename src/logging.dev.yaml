@@ -48,3 +48,5 @@ loggers:
         level: INFO
     sqlalchemy.engine:
         level: ERROR
+    faker.factory:
+        level: ERROR

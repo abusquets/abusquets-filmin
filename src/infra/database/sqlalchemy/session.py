@@ -3,7 +3,8 @@ import abc
 from contextlib import asynccontextmanager
 import contextvars
 import logging
-from typing import TYPE_CHECKING, Any, AsyncContextManager, AsyncIterator, Dict, Optional, cast
+import os
+from typing import TYPE_CHECKING, Any, AsyncContextManager, AsyncIterator, Dict, Final, Optional, cast
 
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -22,6 +23,9 @@ logger = logging.getLogger(__name__)
 db_session_context: contextvars.ContextVar = contextvars.ContextVar('db_ctx', default={'session': None, 'level': 0})
 
 
+SA_ECHO: Final[bool] = os.getenv('SA_ECHO', 'False').lower() == 'true'
+
+
 class AbstractDatabase(abc.ABC):
     @abc.abstractmethod
     def session(self) -> AsyncContextManager[AsyncSession]:
@@ -31,7 +35,7 @@ class AbstractDatabase(abc.ABC):
 @singleton
 class Database(AbstractDatabase):
     def __init__(self) -> None:
-        self.engine: AsyncEngine = create_async_engine(settings.DATABASE_URL, echo=True, future=True)
+        self.engine: AsyncEngine = create_async_engine(settings.DATABASE_URL, echo=SA_ECHO, future=True)
         self._session_factory: sessionmaker = sessionmaker(
             self.engine, class_=AsyncSession, autocommit=False, autoflush=False, expire_on_commit=False
         )
