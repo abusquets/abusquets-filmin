@@ -44,3 +44,7 @@ loggers:
         level: ERROR
     aio_pika:
         level: INFO
+    infra.database.sqlalchemy.session:
+        level: INFO
+    sqlalchemy.engine:
+        level: ERROR
