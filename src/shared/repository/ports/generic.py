@@ -2,7 +2,7 @@ import abc
 import datetime
 
 from decimal import Decimal
-from typing import Dict, Generic, List, Optional, Tuple, TypeVar, Union
+from typing import Dict, Generic, List, Optional, TypeVar, Union
 
 from pydantic import BaseModel
 
@@ -24,7 +24,7 @@ class AbstractRepository(Generic[EntityT, CreateT, UpdateT], abc.ABC):
         ...
 
     @abc.abstractmethod
-    async def get_xpage(self, page: int, size: int) -> Tuple[int, List[EntityT]]:
+    async def get_xpage(self, page: int, size: int) -> List[EntityT]:
         ...
 
     @abc.abstractmethod

@@ -2,7 +2,7 @@ from datetime import date
 from typing import List, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Extra, Field
 
 
 class CreateMovieInDTO(BaseModel):
@@ -18,6 +18,7 @@ class CreateMovieInDTO(BaseModel):
 
     class Config:
         populate_by_name = True
+        extra = Extra.forbid
 
 
 class UpdateMovieInDTO(BaseModel):
@@ -33,6 +34,7 @@ class UpdateMovieInDTO(BaseModel):
 
     class Config:
         populate_by_name = True
+        extra = Extra.forbid
 
 
 class UpdatePartialMovieInDTO(BaseModel):
@@ -48,3 +50,4 @@ class UpdatePartialMovieInDTO(BaseModel):
 
     class Config:
         populate_by_name = True
+        extra = Extra.forbid

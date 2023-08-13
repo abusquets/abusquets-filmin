@@ -3,8 +3,7 @@ from typing import Any, AsyncContextManager, Callable, List, Optional, Self, Tup
 from pydantic import BaseModel
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import noload
-from sqlalchemy.sql import Select, func, select
+from sqlalchemy.sql import Select, select
 
 from shared.exceptions import NotFoundError
 from shared.repository.ports.generic import AbstractRepository, FilterBy
@@ -45,21 +44,17 @@ class SqlAlchemyRepository(AbstractRepository[EntityT, CreateT, UpdateT]):
             return cast(EntityT, result)
 
     # From: https://github.com/lewoudar/fastapi-paginator/blob/main/fastapi_paginator/helpers.py
-    async def _paginate(self, query: Select, page: int, size: int) -> Tuple[int, List[EntityT]]:
+    async def _paginate(self, query: Select, page: int, size: int) -> List[EntityT]:
         # inspiration for this query comes from fastapi-pagination package
         async with self.session_factory() as session:
-            count = await session.scalar(
-                select(func.count()).select_from(query.order_by(None).options(noload('*')).subquery())
-            )
-            items = list(await session.scalars(query.limit(size).offset(page - 1)))
-        return count, items
+            return list(await session.scalars(query.limit(size).offset(page - 1)))
 
     async def get_all(self) -> List[EntityT]:
         query = select(self.entity)
         async with self.session_factory() as session:
             return list((await session.scalars(query)).all())
 
-    async def get_xpage(self, page: int, size: int) -> Tuple[int, List[EntityT]]:
+    async def get_xpage(self, page: int, size: int) -> List[EntityT]:
         query = select(self.entity)
         return await self._paginate(query, page, size)
 

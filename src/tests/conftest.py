@@ -85,15 +85,27 @@ def async_session_maker(engine: AsyncEngine) -> Generator:
     )
 
 
+# async def init_models():
+#     async with engine.begin() as conn:
+#         await conn.run_sync(Base.metadata.create_all, checkfirst=True)
+
+
 async def create_all(engine: AsyncEngine) -> None:
     async with engine.begin() as conn:
         await conn.run_sync(metadata.drop_all)
         await conn.run_sync(metadata.create_all)
+    await engine.dispose()
 
 
 async def drop_all(engine: AsyncEngine) -> None:
     async with engine.begin() as conn:
         await conn.run_sync(metadata.drop_all)
+    await engine.dispose()
+
+
+# async def disconnect() -> None:
+#     if engine:
+#         await engine.dispose()
 
 
 @pytest_asyncio.fixture(scope='session')
