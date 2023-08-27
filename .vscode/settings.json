@@ -16,5 +16,12 @@
   "ruff.args": ["--config=${workspaceFolder}/pyproject.toml"],
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "sonarlint.connectedMode.project": {
+    "connectionId": "alexandre-bussinero",
+    "projectKey": "alexandre-bussinero_abusquets-filmin"
+  },
+  "sonarlint.analyzerProperties": {
+
   }
 }

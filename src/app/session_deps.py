@@ -8,6 +8,9 @@ from auth.domain.services.token import TokenService
 from infra.cache.ports import AbstractCacheRepository
 
 
+http_bearer = HTTPBearer()
+
+
 def get_token_service() -> TokenService:
     return AppContainer().token_service
 
@@ -46,7 +49,7 @@ async def _check_token(
 
 
 async def check_access_token(
-    credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
+    credentials: HTTPAuthorizationCredentials = Depends(http_bearer),
     cache_repository: AbstractCacheRepository = Depends(get_cache_repository),
     token_service: TokenService = Depends(get_token_service),
 ) -> Session:
@@ -54,7 +57,7 @@ async def check_access_token(
 
 
 async def check_refresh_token(
-    credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
+    credentials: HTTPAuthorizationCredentials = Depends(http_bearer),
     cache_repository: AbstractCacheRepository = Depends(get_cache_repository),
     token_service: TokenService = Depends(get_token_service),
 ) -> Session:
@@ -62,7 +65,7 @@ async def check_refresh_token(
 
 
 async def is_admin_session(
-    credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
+    credentials: HTTPAuthorizationCredentials = Depends(http_bearer),
     cache_repository: AbstractCacheRepository = Depends(get_cache_repository),
     token_service: TokenService = Depends(get_token_service),
 ) -> Session:

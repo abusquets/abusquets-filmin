@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Any, Optional
 
 from redis import (
     asyncio as aioredis,
@@ -11,7 +11,7 @@ from utils.singleton import singleton
 @singleton
 class RedisCache(AbstractCacheRepository):
     def __init__(self, url: str, user: str, password: str) -> None:
-        self.redis: Union[aioredis.Redis, None] = None
+        self.redis: Optional[aioredis.Redis] = None
         self.url = url
         self.user = user
         self.password = password
@@ -38,7 +38,7 @@ class RedisCache(AbstractCacheRepository):
     async def get(self, key: str) -> Any:
         return await (await self.get_redis()).get(key)
 
-    async def set(self, key: str, value: Union[EncodableT, None], expire: int) -> None:
+    async def set(self, key: str, value: Optional[EncodableT], expire: int) -> None:
         """expire: expiration in seconds"""
         await self.get_redis()
         if value is None:

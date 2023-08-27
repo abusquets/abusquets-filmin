@@ -24,7 +24,8 @@ class BaseUser:
 
     @staticmethod
     def verify_password(password: str, hashed: str) -> bool:
-        return bool(bcrypt.hashpw(password.encode(), hashed.encode()) == hashed.encode())
+        ret: bool = bcrypt.hashpw(password.encode(), hashed.encode()) == hashed.encode()
+        return ret
 
 
 @dataclass(kw_only=True)

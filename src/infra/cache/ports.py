@@ -1,6 +1,6 @@
 import abc
 
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 
 EncodableT = Union[str, int, float, bytes]
@@ -12,7 +12,7 @@ class AbstractCacheRepository(abc.ABC):
         ...
 
     @abc.abstractmethod
-    async def set(self, key: str, value: Union[EncodableT, None], expire: int) -> None:
+    async def set(self, key: str, value: Optional[EncodableT], expire: int) -> None:
         ...
 
     @abc.abstractmethod

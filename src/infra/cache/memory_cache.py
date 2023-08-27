@@ -1,7 +1,7 @@
 from threading import RLock
 import time
 
-from typing import Any, Dict, Union
+from typing import Any, Dict, Optional
 
 from infra.cache.ports import AbstractCacheRepository, EncodableT
 
@@ -27,7 +27,7 @@ class MemoryCache(AbstractCacheRepository):
                 self._data.pop(key, None)
             return None
 
-    async def set(self, key: str, value: Union[EncodableT, None], expire: int) -> None:
+    async def set(self, key: str, value: Optional[EncodableT], expire: int) -> None:
         with self.lock:
             if value is None:
                 self._data.pop(key, None)
