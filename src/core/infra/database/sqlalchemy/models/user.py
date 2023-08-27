@@ -11,7 +11,7 @@ users = Table(
     'core_user',
     metadata,
     Column('id', Integer, primary_key=True),
-    Column('uuid', UUID(as_uuid=True), unique=True, default=uuid.uuid4),
+    Column('uuid', UUID(as_uuid=True), unique=True, nullable=False, default=uuid.uuid4),
     Column('first_name', String(255), nullable=False),
     Column('last_name', String(255), nullable=True),
     Column('email', String(255), unique=True, nullable=False),

@@ -30,12 +30,20 @@ alembic revision --autogenerate -m "init"
 ## Creata a new migration:
 
 ```bash
-alembic revision --autogenerate -m "add model core.country"
-alembic revision --autogenerate -m "add model core.user"
+
+alembic revision --autogenerate --branch-label core \
+    --version-path core/infra/database/alembic/versions/ -m 'add core models'
+
+alembic revision --autogenerate --branch-label filmin \
+    --version-path filmin/infra/database/alembic/versions/ -m 'add filmin models'
+
 ```
 
 ## Apply the migration to the database:
 
 ```bash
 alembic upgrade head
+
+alembic upgrade filmin@head
+
 ```
