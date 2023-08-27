@@ -51,7 +51,7 @@ services:
   postgres:
     container_name: postgres.filmin
     hostname: postgres.filmin
-    image: postgres:15
+    image: postgres:15.3
     environment:
       POSTGRES_DB: ${POSTGRES_DB-filmin}
       POSTGRES_USER: ${POSTGRES_USER-postgres}

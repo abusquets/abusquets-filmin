@@ -8,8 +8,8 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from config import settings
-import infra.database.sqlalchemy.models.core
-import infra.database.sqlalchemy.models.filmin  # noqa
+import core.infra.database.sqlalchemy.models  # noqa
+import filmin.infra.database.sqlalchemy.models  # noqa
 
 from infra.database.sqlalchemy.sqlalchemy import metadata
 
@@ -60,6 +60,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={'paramstyle': 'named'},
+        transaction_per_migration=True,
     )
 
     with context.begin_transaction():
